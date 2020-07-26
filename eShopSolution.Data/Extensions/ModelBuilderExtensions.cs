@@ -1,5 +1,6 @@
 ﻿using eShopSolution.Data.Entities;
 using eShopSolution.Data.Enums;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -111,6 +112,44 @@ namespace eShopSolution.Data.Extensions
             modelBuilder.Entity<ProductInCategory>().HasData(
                  new ProductInCategory() { ProductId = 1, CategoryId = 1, }
                 );
+
+
+
+            // any guid
+            var ROLE_ID = new Guid("3792AF46-9A8F-4AE6-A1C9-C9C910941E5B");
+            var ADMIN_ID = new Guid("BE525247-1560-4657-8748-3563E08D7ED3");
+
+            modelBuilder.Entity<AppRole>().HasData(new AppRole
+            {
+                Id = ROLE_ID,  // chữ tool trên kia có thể tạo cho ta guild mới nhe
+                Name = "admin",
+                NormalizedName = "admin",
+                Description="Administrator role"
+            }) ;
+
+            var hasher = new PasswordHasher<AppUser>(); //
+            modelBuilder.Entity<AppUser>().HasData(new AppUser
+            {
+                Id = ADMIN_ID,
+                UserName = "admin",
+                NormalizedUserName = "admin",
+                Email = "nguyenluc2001@gmail.com",
+                NormalizedEmail = "nguyenluc2001@gmail.com",
+                EmailConfirmed = true,
+                PasswordHash = hasher.HashPassword(null, "tl652200"),
+                SecurityStamp = string.Empty,
+                FirstName = "luc",
+                LastName = "van",
+                DOB = new DateTime(2001, 06, 16)
+            }) ;
+
+            modelBuilder.Entity<IdentityUserRole<Guid>>().HasData(new IdentityUserRole<Guid>
+            {
+                RoleId = ROLE_ID,
+                UserId = ADMIN_ID
+            });
+
+            // song thì ta chạy lênh: add-migration SeedIdentityUser  và nhớ update-database
 
         }
     }

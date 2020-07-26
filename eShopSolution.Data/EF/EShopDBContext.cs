@@ -1,6 +1,8 @@
 ﻿using eShopSolution.Data.Configurations;
 using eShopSolution.Data.Entities;
 using eShopSolution.Data.Extensions;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -10,8 +12,19 @@ namespace eShopSolution.Data.EF
 {
     // trang hướng dẫn kết nối
     //https://docs.microsoft.com/en-us/ef/core/miscellaneous/connection-strings
-    public class EShopDBContext : DbContext // kế thừa của thằng Microsoft.EntityFrameworkCore;
+
+
+
+
+    // ban đầu kế thừa DbContext của thằng Microsoft.EntityFrameworkCore;
+    public class EShopDBContext : IdentityDbContext<AppUser,AppRole,Guid> // sau đó ta thay bằng IdentityDbContext của thằng using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
     {
+        //trong IdentityDbContext có nhiều cái về User và UserROLE và Key nên ta thay và kế thừa thằng này
+
+
+
+
+
         public EShopDBContext(DbContextOptions options) : base(options) // khi kế thừa nó có thể Generate ra thằng này
         {
 
@@ -35,6 +48,24 @@ namespace eShopSolution.Data.EF
             modelBuilder.ApplyConfiguration(new ProductTranslationConfiguration());
             modelBuilder.ApplyConfiguration(new PromotionConfiguration());
             modelBuilder.ApplyConfiguration(new TransactionConfiguration());
+            // song thì chạy lệnh :Add-Migration Initial để nó tạo ra bảng tương ứng
+
+            // mỗi lần sửa nhớ chạy:update-database
+
+            modelBuilder.ApplyConfiguration(new AppUserConfiguration());
+            modelBuilder.ApplyConfiguration(new AppRoleConfiguration());
+
+            modelBuilder.Entity<IdentityUserClaim<Guid>>().ToTable("AppUserClaims");
+            modelBuilder.Entity<IdentityUserLogin<Guid>>().ToTable("AppUserLogins").HasKey(x=>x.UserId);
+            modelBuilder.Entity<IdentityUserRole<Guid>>().ToTable("AppUserRoles").HasKey(x=>new { x.UserId,x.RoleId});
+            modelBuilder.Entity<IdentityRoleClaim<Guid>>().ToTable("AppUserRoleClaims");
+            modelBuilder.Entity<IdentityUserToken<Guid>>().ToTable("AppUserTokens").HasKey(x=>x.UserId);
+            // cấu hình song ta chạy lệnh:add-migration AspNetCoreIdentityDatabase   để nó tạo ra bảng tương ứng ❤❤❤❤❤❤❤❤❤❤❤
+
+
+
+
+
 
 
             // cách seeding dữ liệu trực tiếp (lưu ý rất dài lên dùng cách tách ra file ở cách 2)
@@ -63,23 +94,20 @@ namespace eShopSolution.Data.EF
 
 
         public DbSet<Cart> Carts { get; set; }
-
         public DbSet<CategoryTranslation> CategoryTranslations { get; set; }
         public DbSet<ProductInCategory> ProductInCategories { get; set; }
-
         public DbSet<Contact> Contacts { get; set; }
-
         public DbSet<Language> Languages { get; set; }
-
         public DbSet<Order> Orders { get; set; }
-
         public DbSet<OrderDetail> OrderDetails { get; set; }
         public DbSet<ProductTranslation> ProductTranslations { get; set; }
-
         public DbSet<Promotion> Promotions { get; set; }
-
-
         public DbSet<TranSaction> Transactions { get; set; }
+
+
+        //public DbSet<AppRole> AppRoles { get; set; }
+        //public DbSet<AppUser> AppUsers { get; set; }
+
 
     }
 }
