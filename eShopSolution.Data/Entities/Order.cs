@@ -19,6 +19,8 @@ namespace eShopSolution.Data.Entities
         public List<OrderDetail> OrderDetails { get; set; }// để cầu hình 1 nhiều với OrderDetail
         // để list bên số ít có nghĩa là một Order có thể thuộc nhiều OrderDetail
         // khi bên số nhiều tham chiếu thì nó sẽ có withMany chứng tỏ đúng
-    
+
+        public AppUser AppUser { get; set; }// để tham chiếu tới AppUser
+
     }
 }

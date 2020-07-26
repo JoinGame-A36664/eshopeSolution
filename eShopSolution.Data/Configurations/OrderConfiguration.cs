@@ -30,6 +30,10 @@ namespace eShopSolution.Data.Configurations
 
 
             builder.Property(x => x.ShipPhoneNumber).IsRequired().HasMaxLength(200);
+
+            // một thằng user có nhiều order
+            builder.HasOne(x => x.AppUser).WithMany(x => x.Orders).HasForeignKey(x => x.UserId);
+
            
         }
     }
