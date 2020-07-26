@@ -1,5 +1,6 @@
 ﻿using eShopSolution.Data.Configurations;
 using eShopSolution.Data.Entities;
+using eShopSolution.Data.Extensions;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -18,6 +19,7 @@ namespace eShopSolution.Data.EF
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            // configuration useing fluent API  ( cấu hính sử dụng API)
             modelBuilder.ApplyConfiguration(new CartConfiguration());
 
             modelBuilder.ApplyConfiguration(new AppConfigConfiguration());//https://www.learnentityframeworkcore.com/configuration/fluent-api
@@ -33,6 +35,22 @@ namespace eShopSolution.Data.EF
             modelBuilder.ApplyConfiguration(new ProductTranslationConfiguration());
             modelBuilder.ApplyConfiguration(new PromotionConfiguration());
             modelBuilder.ApplyConfiguration(new TransactionConfiguration());
+
+
+            // cách seeding dữ liệu trực tiếp (lưu ý rất dài lên dùng cách tách ra file ở cách 2)
+            //cách 1:
+            // Data seeding ( them dữ liệu cho từng thực thể)  như kiểu tạo record trong database
+            //modelBuilder.Entity<AppConfig>().HasData(
+            //    new AppConfig() { Key = "HomeTitle",Value="this is a home page eShopeSlution" },
+            //     new AppConfig() { Key = "HomeKeyWord", Value = "this is KeyWord of eShopeSlution" },
+            //      new AppConfig() { Key = "HomeDescription", Value = "this is Description of eShopeSlution" }
+            //       );
+
+            // cách 2:
+            modelBuilder.Seed();   // tạo extension Seed bên ModelBuilderExtension
+
+
+
 
             // giúp làm một số việc khi tạo dbcontext
             // base.OnModelCreating(modelBuilder);
