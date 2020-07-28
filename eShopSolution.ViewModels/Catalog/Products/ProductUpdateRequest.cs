@@ -1,19 +1,14 @@
-﻿
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace eShopSolution.ViewModels.Catalog.Products.Manage
+namespace eShopSolution.ViewModels.Catalog.Products
 {
-    public class ProductCreateRequest
+    public class ProductUpdateRequest
     {
-        // đây là phần của bảng Product cần tạo
-        public decimal Price { set; get; }
-        public decimal OriginalPrice { set; get; }
-        public int Stock { set; get; }
+        public int Id { set; get; }
 
-        // đây là phần cảu ProductTranslation cần tạo 
         public string Name { set; get; }
         public string Description { set; get; }
         public string Details { set; get; }
@@ -21,11 +16,10 @@ namespace eShopSolution.ViewModels.Catalog.Products.Manage
         public string SeoTitle { set; get; }
 
         public string SeoAlias { get; set; }
-        public string LanguageId { set; get; }
+        public string LanguageId { set; get; } // chỉ để query chứ ko update thằng này
 
         // phải install thằng IFormFile nó có chứ năng mã hóa nhị phân để ta sử dụng cho mã hóa nhị phân ảnh
         public IFormFile ThumbnailImage { get; set; }
-
 
     }
 }
