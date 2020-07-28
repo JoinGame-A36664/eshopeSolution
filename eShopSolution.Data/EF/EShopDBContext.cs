@@ -54,6 +54,7 @@ namespace eShopSolution.Data.EF
 
             modelBuilder.ApplyConfiguration(new AppUserConfiguration());
             modelBuilder.ApplyConfiguration(new AppRoleConfiguration());
+            modelBuilder.ApplyConfiguration(new ProductImageConfiguration());
 
             modelBuilder.Entity<IdentityUserClaim<Guid>>().ToTable("AppUserClaims");
             modelBuilder.Entity<IdentityUserLogin<Guid>>().ToTable("AppUserLogins").HasKey(x=>x.UserId);
@@ -63,7 +64,7 @@ namespace eShopSolution.Data.EF
             // cấu hình song ta chạy lệnh:add-migration AspNetCoreIdentityDatabase   để nó tạo ra bảng tương ứng ❤❤❤❤❤❤❤❤❤❤❤
 
 
-
+            // muốn add thêm bảng nào vào database thì chạy lệnh add-migration tên mới cho bảng đó và nhớ chạy lệnh update-database
 
 
 
@@ -87,6 +88,11 @@ namespace eShopSolution.Data.EF
             // base.OnModelCreating(modelBuilder);
         }
 
+
+
+        // thằng này dùng để _context bên MangeProductService và PublicProductSerVice tiêm vào 
+
+
         public DbSet<Product> Products { get; set; }
         public DbSet<Category> Categories { get; set; }
 
@@ -105,8 +111,7 @@ namespace eShopSolution.Data.EF
         public DbSet<TranSaction> Transactions { get; set; }
 
 
-        //public DbSet<AppRole> AppRoles { get; set; }
-        //public DbSet<AppUser> AppUsers { get; set; }
+       public DbSet<ProductImage>ProductImages { get; set; }
 
 
     }
