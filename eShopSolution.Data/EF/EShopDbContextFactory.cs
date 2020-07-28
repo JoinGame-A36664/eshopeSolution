@@ -9,7 +9,7 @@ using System.Text;
 namespace eShopSolution.Data.EF
 {
     // vào đây https://docs.microsoft.com/en-us/ef/core/miscellaneous/cli/dbcontext-creation
-    public class EShopDbContextFactory : IDesignTimeDbContextFactory<EShopDBContext>
+    public class EShopDbContextFactory : IDesignTimeDbContextFactory<EShopDBContext>  // nó nối với khung ta tạo tên EShopDBContext để kết nối với database thông qua appsettings
     {
         public EShopDBContext CreateDbContext(string[] args)
         {
