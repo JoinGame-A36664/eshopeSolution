@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using eShopeSolution.Utilities.Constants;
 using eShopSolution.Application.Catalog.Products;
+using eShopSolution.Application.Common;
 using eShopSolution.Data.EF;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -36,6 +37,8 @@ namespace eShopSolution.BackendApi
 
             //  KHAI BÁO DI 
             services.AddTransient<IPublicProductService, PublicProductService>();
+            services.AddTransient<IMangeProductService, MangeProductService>();
+            services.AddTransient<IStorageService, FileStorageService>();
 
 
             services.AddControllersWithViews();
