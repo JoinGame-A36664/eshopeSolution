@@ -7,7 +7,6 @@ using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using eShopSolution.ViewModels.Catalog.Products;
 using eShopSolution.ViewModels.Catalog.Common;
-using eShopSolution.ViewModels.Catalog.Products.Public;
 namespace eShopSolution.Application.Catalog.Products
 {
     public class PublicProductService : IPublicProductService
@@ -22,8 +21,40 @@ namespace eShopSolution.Application.Catalog.Products
             _context = context; // thằng Di nó sẽ tự tiêm vào đây cho chúng ta và 
         }
 
+        // lấy tất cả sản phẩm
+        public async Task<List<ProductViewModel>> GetAll()
+        {
+            var query = from p in _context.Products
+                        join pt in _context.ProductTranslations
+                        on p.Id equals pt.ProductId
+                        join pic in _context.ProductInCategories on p.Id equals pic.ProductId
+                        join c in _context.Categories on pic.CategoryId equals c.Id
+                        select new { p, pt, pic };
+
+            var data = await query
+               .Select(x => new ProductViewModel()
+               {
+                   Id = x.p.Id,
+                   Name = x.pt.Name,
+                   DateCreated = x.p.DateCreated,
+                   Description = x.pt.Description,
+                   Details = x.pt.Details,
+                   LanguageId = x.pt.LanguageId,
+                   OriginalPrice = x.p.OriginalPrice,
+                   Price = x.p.Price,
+                   SeoAlias = x.pt.SeoAlias,
+                   SeoDescription = x.pt.SeoDescription,
+                   SeoTitle = x.pt.SeoTitle,
+                   Stock = x.p.Stock,
+                   ViewCount = x.p.ViewCount
+
+               }).ToListAsync();
+
+            return data;
+        }
+
         // using eShopSolution.ViewModels.Catalog.Products.Public; để cho nó khác với thằng Mangae
-        public async Task<PagedResult<ProductViewModel>> GetAllByCategoryId(GetProductPagingRequest request) // lấy của public nhe
+        public async Task<PagedResult<ProductViewModel>> GetAllByCategoryId(GetPublicProductPagingRequest request) // lấy của public nhe
         {
             // bước 1 :select join
             var query = from p in _context.Products

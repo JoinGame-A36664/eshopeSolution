@@ -4,7 +4,6 @@ using eShopSolution.Data.EF;
 using eShopSolution.Data.Entities;
 using eShopSolution.ViewModels.Catalog.Common;
 using eShopSolution.ViewModels.Catalog.Products;
-using eShopSolution.ViewModels.Catalog.Products.Manage;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -137,7 +136,7 @@ namespace eShopSolution.Application.Catalog.Products
 
 
         // phân trang
-        public async Task<PagedResult<ProductViewModel>> GetAllPaging(GetProductPagingRequest request)
+        public async Task<PagedResult<ProductViewModel>> GetAllPaging(GetMangeProductRequest request)
         {
             // bước 1 :select join
             var query = from p in _context.Products
@@ -192,24 +191,22 @@ namespace eShopSolution.Application.Catalog.Products
         public async Task<List<ProductImageViewModel>> GetListImage(int productId)
         {
 
-            List<ProductImage> producImages = await _context.ProductImages.Where(x => x.ProductId == productId).ToListAsync();
-            if (producImages == null) throw new EShopeException($"Cannot find anything Image had id:{productId}");
+            var query = from pi in _context.ProductImages
+                     join pd in _context.Products
+                     on pi.ProductId equals pd.Id
+                     select new { pi };
+            var data = await query
+               .Select(x => new ProductImageViewModel()
+               {
+                   FilePath=x.pi.ImagePath,
+                   FileSize=x.pi.FileSize,
+                   Id=x.pi.Id,
+                   IsDefault=x.pi.Isdefault,
+                   
 
+               }).ToListAsync();
 
-            List<ProductImageViewModel> ProductImageResult = new List<ProductImageViewModel>(producImages.Count());
-            
-
-            for (int i = 0; i < producImages.Count(); i++)
-            {
-                ProductImageResult[i].FilePath = producImages[i].ImagePath;
-                ProductImageResult[i].FileSize = producImages[i].FileSize;
-                ProductImageResult[i].Id = producImages[i].Id;
-                ProductImageResult[i].IsDefault = producImages[i].Isdefault;
-            }
-
-            return ProductImageResult;
-
-
+            return data;
         }
 
 

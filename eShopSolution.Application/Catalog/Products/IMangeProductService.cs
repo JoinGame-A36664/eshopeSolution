@@ -1,11 +1,9 @@
 ﻿
 using eShopSolution.ViewModels.Catalog.Common;
 using eShopSolution.ViewModels.Catalog.Products;
-using eShopSolution.ViewModels.Catalog.Products.Manage;
 using Microsoft.AspNetCore.Http;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using GetProductPagingRequest = eShopSolution.ViewModels.Catalog.Products.Manage.GetProductPagingRequest;
 
 namespace eShopSolution.Application.Catalog.Products
 {
@@ -29,7 +27,7 @@ namespace eShopSolution.Application.Catalog.Products
 
      
 
-        Task<PagedResult<ProductViewModel>> GetAllPaging(GetProductPagingRequest request);
+        Task<PagedResult<ProductViewModel>> GetAllPaging(GetMangeProductRequest request);
 
 
         // phương thức thêm ảnh vào database
