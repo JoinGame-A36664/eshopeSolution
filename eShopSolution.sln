@@ -14,7 +14,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eShopSolution.Data", "eShop
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eShopSolution.Application", "eShopSolution.Application\eShopSolution.Application.csproj", "{234169D2-1956-4E3E-B07A-9A42CE68B8EE}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eShopeSolution.Utilities", "eShopeSolution.Utilities\eShopeSolution.Utilities.csproj", "{F971532D-E0EC-417A-A314-3DF8A0450AF0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eShopSolution.Utilities", "eShopeSolution.Utilities\eShopSolution.Utilities.csproj", "{F971532D-E0EC-417A-A314-3DF8A0450AF0}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eShopSolution.ViewModels", "eShopSolution.ViewModels\eShopSolution.ViewModels.csproj", "{E0B2C638-8CC7-45ED-9CD4-B6F57EE13BCF}"
 EndProject
@@ -26,7 +26,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "2.Domain", "2.Domain", "{05
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "3.Hots", "3.Hots", "{D38B43CA-65B0-4D08-B72F-093CCF92C96A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "eShopeSolution.AddminApp", "eShopeSolution.AddminApp\eShopeSolution.AddminApp.csproj", "{4D3E12C0-C9A3-497D-BEAF-2DA80AC3D329}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eShopeSolution.AddminApp", "eShopeSolution.AddminApp\eShopeSolution.AddminApp.csproj", "{4D3E12C0-C9A3-497D-BEAF-2DA80AC3D329}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

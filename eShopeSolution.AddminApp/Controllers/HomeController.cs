@@ -6,9 +6,11 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using eShopeSolution.AddminApp.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace eShopeSolution.AddminApp.Controllers
 {
+    [Authorize]// không được vào khi chưa đăng nhập    // nó chính là cái ổ khóa của Swagger
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
