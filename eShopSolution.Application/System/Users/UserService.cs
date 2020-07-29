@@ -1,10 +1,13 @@
 ﻿using eShopSolution.Data.Entities;
+using eShopSolution.ViewModels.Common;
 using eShopSolution.ViewModels.System.Users;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
@@ -61,6 +64,38 @@ namespace eShopSolution.Application.System.Users
                 signingCredentials: creds);
 
             return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+
+        // phương thức lấy ra danh sách user     (nó sẽ lấy ra user và trả về một model phân trang)
+        public async Task<PagedResult<UserVm>> GetUserPaging(GetUserPagingRequest request)
+        {
+            var query = _userManager.Users;
+            if (!string.IsNullOrEmpty(request.KeyWord))// chỉ string mới được sử dụng phương thức này nhe
+            {
+                // tìm giống hệt product bằng keyWord
+                query = query.Where(x => x.UserName.Contains(request.KeyWord)
+                || x.PhoneNumber.Contains(request.KeyWord));
+            }
+            int totalRow = await query.CountAsync(); // lấy ra tông số số dòng để phân trang
+            var data = await query.Skip((request.PageIndex - 1) * request.PageSize)
+                .Take(request.PageSize)// nếu PageIndex=2 và PageSize=20 thì bỏ qua 10 chỉ lấy 10 bẩn ghi hiện lên ko lấy tất để phù hợp với PageSize
+                .Select(x => new UserVm()
+                {
+                    Email = x.Email,
+                    PhoneNumber = x.PhoneNumber,
+                    UserName = x.UserName,
+                    FirstName = x.FirstName,
+                    Id = x.Id,
+                    LastName = x.LastName
+                }).ToListAsync(); // vì ta Async ở đây nên trên kia ta chỉ cần await để đẩy vào data là song  nhớ là ToListAsync nha vì bên PageRsult Item ta để là list
+                                  // bước 4: selecet and Project
+            var pagedResult = new PagedResult<UserVm>()
+            {
+                TotalRecord = totalRow,
+                Item = data
+            };
+
+            return pagedResult;
         }
 
         // đăng kí user
