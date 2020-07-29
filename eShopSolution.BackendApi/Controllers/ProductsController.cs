@@ -19,14 +19,13 @@ namespace eShopSolution.BackendApi.Controllers
     public class ProductsController : ControllerBase
     {
         // bắt đầu Di
-        private readonly IPublicProductService _publicProductService;
 
-        private readonly IMangeProductService _mangeProductService;
+        private readonly IProductService _ProductService;
 
-        public ProductsController(IPublicProductService publicProductService, IMangeProductService mangeProductService)  // bắt đầu dử dụng cá phương thức mà ta định nghĩa cho sản phẩm
+        public ProductsController(IProductService publicProductService, IProductService ProductService)  // bắt đầu dử dụng cá phương thức mà ta định nghĩa cho sản phẩm
         {
-            _publicProductService = publicProductService;  // muốn tiêm vào nhó khai báo DI bên service nhe
-            _mangeProductService = mangeProductService;
+            _ProductService = publicProductService;  // muốn tiêm vào nhó khai báo DI bên service nhe
+            _ProductService = ProductService;
         }
 
         // CÁC PHƯƠNG THỨC CẢU PUBLIC
@@ -43,7 +42,7 @@ namespace eShopSolution.BackendApi.Controllers
         [HttpGet("{languageId}")] // đặt alias(bí danh) cho nó để không trùng với thằng ở trên chỉ dành cho HttpGet
         public async Task<IActionResult> GetAllPaging(string languageId, [FromQuery] GetPublicProductPagingRequest request) // tất cả tham số đều lấy từ query ra khi ta để FromQuery
         {
-            var Products = await _publicProductService.GetAllByCategoryId(languageId, request); // thằng request này có languageId rồi nhe
+            var Products = await _ProductService.GetAllByCategoryId(languageId, request); // thằng request này có languageId rồi nhe
             return Ok(Products);
         }
 
@@ -55,7 +54,7 @@ namespace eShopSolution.BackendApi.Controllers
         [HttpGet("{productId}/{languageId}")] // thằng này sẽ chuyền vào id cảu sản phẩm  trên ta lấy vd productId=1
         public async Task<IActionResult> GetById(int productId, string languageId)
         {
-            var Product = await _mangeProductService.GetById(productId, languageId);
+            var Product = await _ProductService.GetById(productId, languageId);
             if (Product == null)
                 return BadRequest("Cannot dìn Product");
             return Ok(Product);
@@ -69,12 +68,12 @@ namespace eShopSolution.BackendApi.Controllers
                 return BadRequest(ModelState);
             }
 
-            var productId = await _mangeProductService.Create(request); // thằng này chả về id nhe
+            var productId = await _ProductService.Create(request); // thằng này chả về id nhe
             if (productId == 0)
                 return BadRequest();// đây là nỗi 400
 
             // để có product chuyền về thì ta phải
-            var product = await _mangeProductService.GetById(productId, request.LanguageId);
+            var product = await _ProductService.GetById(productId, request.LanguageId);
             // cách 1:
             //return Created(nameof(GetById), product);
             // cách 2:
@@ -84,7 +83,7 @@ namespace eShopSolution.BackendApi.Controllers
         [HttpPut] // update tất cả phần
         public async Task<IActionResult> Update([FromForm] ProductUpdateRequest request) // tất cả các thuộc tính phải using form data
         {
-            var affectedResult = await _mangeProductService.Update(request); // thằng này chả về id nhe
+            var affectedResult = await _ProductService.Update(request); // thằng này chả về id nhe
             if (affectedResult == 0)
                 return BadRequest("Cannot find Id");// đây là nỗi 400
 
@@ -94,7 +93,7 @@ namespace eShopSolution.BackendApi.Controllers
         [HttpDelete("{productId}")]
         public async Task<IActionResult> Delete(int productId) //
         {
-            var affectedResult = await _mangeProductService.Delete(productId); // thằng này chả về id nhe
+            var affectedResult = await _ProductService.Delete(productId); // thằng này chả về id nhe
             if (affectedResult == 0)
                 return BadRequest();// đây là nỗi 400
 
@@ -105,7 +104,7 @@ namespace eShopSolution.BackendApi.Controllers
         [HttpPatch("{productId}/{newPrice}")] // đây là update 1 phần
         public async Task<IActionResult> UpdatePrice(int productId, decimal newPrice) // không cần fromquery nữa nếu để như thế này là bắt buộc
         {
-            var isSuccessful = await _mangeProductService.UpdatePrice(productId, newPrice); // thằng này chả về id nhe
+            var isSuccessful = await _ProductService.UpdatePrice(productId, newPrice); // thằng này chả về id nhe
             if (isSuccessful == false)
                 return BadRequest();// đây là nỗi 400
             return Ok();
@@ -121,12 +120,12 @@ namespace eShopSolution.BackendApi.Controllers
                 return BadRequest(ModelState);
             }
 
-            var imageId = await _mangeProductService.AddImage(productId, request); // thằng này chả về id nhe
+            var imageId = await _ProductService.AddImage(productId, request); // thằng này chả về id nhe
             if (imageId == 0)
                 return BadRequest();// đây là nỗi 400
 
             // để có product chuyền về thì ta phải
-            var image = await _mangeProductService.GetImageById(imageId);
+            var image = await _ProductService.GetImageById(imageId);
 
             return CreatedAtAction(nameof(GetImageById), new { id = imageId }, image); // Ok trả ra 200 còn created là 201  khi học jquery đã được học cái này
         }
@@ -139,7 +138,7 @@ namespace eShopSolution.BackendApi.Controllers
                 return BadRequest(ModelState);
             }
 
-            var result = await _mangeProductService.UpDateImage(imageId, request); // thằng này chả về id nhe
+            var result = await _ProductService.UpDateImage(imageId, request); // thằng này chả về id nhe
             if (result == 0)
                 return BadRequest();// đây là nỗi 400
 
@@ -154,7 +153,7 @@ namespace eShopSolution.BackendApi.Controllers
                 return BadRequest(ModelState);
             }
 
-            var result = await _mangeProductService.RemoveImage(imageId); // thằng này chả về id nhe
+            var result = await _ProductService.RemoveImage(imageId); // thằng này chả về id nhe
             if (result == 0)
                 return BadRequest();// đây là nỗi 400
 
@@ -164,7 +163,7 @@ namespace eShopSolution.BackendApi.Controllers
         [HttpGet("{productId}/images/{imageId}")] // nhớ phải đi qua images rồi mới đến imageId (có nghĩa là image của sản phẩm nay)
         public async Task<IActionResult> GetImageById(int productId, int imageId)
         {
-            var image = await _mangeProductService.GetImageById(imageId);
+            var image = await _ProductService.GetImageById(imageId);
             if (image == null)
                 return BadRequest("Cannot dìn Product");
             return Ok(image);

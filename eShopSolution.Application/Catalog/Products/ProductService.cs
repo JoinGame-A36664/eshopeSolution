@@ -16,28 +16,22 @@ using System.Threading.Tasks;
 
 namespace eShopSolution.Application.Catalog.Products
 {
-    public class MangeProductService : IMangeProductService
+    public class ProductService : IProductService
     {
-
         // hiện tại là đang sử dụng theo DI đã được học ở khóa cơ bản rồi nha
-
 
         // đây là đang sử dụng cách 1 bên DI nhe mở khóa cơ bản ra mà xem
         private readonly EShopDBContext _context;// thằng này có tác dụng kết nối với database để ta thực hiện các chức năng bên dưới
 
         private readonly IStorageService _storageService;
 
-        public MangeProductService(EShopDBContext context, IStorageService storageService) // phải refrnece từ tầng data để lấy EShopDBContext
+        public ProductService(EShopDBContext context, IStorageService storageService) // phải refrnece từ tầng data để lấy EShopDBContext
         {
-            _context = context; // thằng Di nó sẽ tự tiêm vào đây cho chúng ta và 
+            _context = context; // thằng Di nó sẽ tự tiêm vào đây cho chúng ta và
 
             // tiêm thằng storService
             _storageService = storageService;
-
         }
-
-
-
 
         // Addviewcount theo id của Product
         public async Task AddViewCount(int ProductId)
@@ -74,8 +68,6 @@ namespace eShopSolution.Application.Catalog.Products
                         LanguageId=request.LanguageId
                     }
                 }
-
-
             };
             // thêm ảnh cho sản phẩm
 
@@ -91,20 +83,15 @@ namespace eShopSolution.Application.Catalog.Products
                         ImagePath= await this.SaveFile(request.ThumbnailImage),
                         Isdefault=true,
                         SortOrder=1
-
                     }
                 };
             }
 
-
-
             _context.Products.Add(product);
             // save bất đồng bộ nó sẽ được đa luồng nên có thể sử lý được nhiều Request cùng một lúc
-            await _context.SaveChangesAsync(); // thay vì chờ Save song nó có thể nhả ra và thực hiện Request khác cùng một lúc 
+            await _context.SaveChangesAsync(); // thay vì chờ Save song nó có thể nhả ra và thực hiện Request khác cùng một lúc
             return product.Id;
-
         }
-
 
         // xóa Product theo Id
         public async Task<int> Delete(int ProductId)
@@ -113,11 +100,8 @@ namespace eShopSolution.Application.Catalog.Products
 
             // đây là xóa sản phẩm chứ không phải là số số lượng sản phẩm nhe
 
-
             var Product = await _context.Products.FindAsync(ProductId);
             if (Product == null) throw new EShopeException($"Cannot find a Product :{ProductId}");  // tạo một Project class Exception
-
-
 
             // tìm xem có thằng nào giống thứ muốn xóa không // nhơ phải xóa ảnh trước rồi mới xóa sản phẩm
             var images = _context.ProductImages.Where(x => x.ProductId == ProductId); // tất cả những ảnh có ProductId = Id của sản phẩm cần xóa thì ta sẽ xóa tấ vì một sản phẩm có nhiều ảnh
@@ -131,8 +115,6 @@ namespace eShopSolution.Application.Catalog.Products
 
             return await _context.SaveChangesAsync();
         }
-
-
 
         // phân trang
         public async Task<PagedResult<ProductViewModel>> GetAllPaging(GetMangeProductRequest request)
@@ -151,7 +133,6 @@ namespace eShopSolution.Application.Catalog.Products
             if (request.CategoryIds.Count > 0)// có nghĩa là có tất cả các tìm kiếm nào
             {
                 query = query.Where(p => request.CategoryIds.Contains(p.pic.CategoryId));//một trong só nhữ thằng này thì mới được
-
             }
             // bước 3: paging
             int totalRow = await query.CountAsync(); // lấy ra tông số số dòng để phân trang
@@ -172,18 +153,15 @@ namespace eShopSolution.Application.Catalog.Products
                     SeoTitle = x.pt.SeoTitle,
                     Stock = x.p.Stock,
                     ViewCount = x.p.ViewCount
-
                 }).ToListAsync(); // vì ta Async ở đây nên trên kia ta chỉ cần await để đẩy vào data là song  nhớ là ToListAsync nha vì bên PageRsult Item ta để là list
                                   // bước 4: selecet and Project
             var pagedResult = new PagedResult<ProductViewModel>()
             {
                 TotalRecord = totalRow,
                 Item = data
-
             };
             return pagedResult;
         }
-
 
         public async Task<ProductViewModel> GetById(int productId, string languageId)
         {
@@ -212,9 +190,6 @@ namespace eShopSolution.Application.Catalog.Products
             return ProductViewModel;
         }
 
-
-
-
         // bắt đầu Update vào  bảng ProductTransalation còn Product chỉ để query thôi
         public async Task<int> Update(ProductUpdateRequest request)
         {
@@ -241,24 +216,15 @@ namespace eShopSolution.Application.Catalog.Products
                 {
                     // nếu khác null ta mới update nó
 
-
-
                     thumbnailImage.FileSize = request.ThumbnailImage.Length;
                     thumbnailImage.ImagePath = await this.SaveFile(request.ThumbnailImage);
                     _context.ProductImages.Update(thumbnailImage);
-
                 }
-
             }
-
-
 
             return await _context.SaveChangesAsync(); // nó sẽ trả về kiểu int nếu >0 là thành công
             // chả về một bản ghi
-
         }
-
-
 
         // bắt đầu update Price
         public async Task<bool> UpdatePrice(int ProductId, decimal newPrice)
@@ -267,8 +233,6 @@ namespace eShopSolution.Application.Catalog.Products
             if (product == null) throw new EShopeException($"Cannot find a Product with id :{ProductId}");
             product.Price = newPrice;
             return await _context.SaveChangesAsync() > 0;// nếu >0 thì nó return true là thành công
-
-
         }
 
         public async Task<bool> UpdateStock(int ProductId, int addedQuantity)
@@ -278,9 +242,6 @@ namespace eShopSolution.Application.Catalog.Products
             product.Stock += addedQuantity; // số lượng cộng với chất lượng
             return await _context.SaveChangesAsync() > 0;// nếu >0 thì nó return true là thành công
         }
-
-
-
 
         // các phương thức về Image
 
@@ -301,12 +262,11 @@ namespace eShopSolution.Application.Catalog.Products
                 productImage.FileSize = request.ImageFile.Length;
             }
             _context.ProductImages.Add(productImage);
-             await _context.SaveChangesAsync(); //
+            await _context.SaveChangesAsync(); //
             return productImage.Id;
         }
 
-
-        public async Task<int> UpDateImage( int imageId, ProductImageUpdateRequest request)
+        public async Task<int> UpDateImage(int imageId, ProductImageUpdateRequest request)
         {
             var productImage = await _context.ProductImages.FindAsync(imageId);
             if (productImage == null)
@@ -318,28 +278,25 @@ namespace eShopSolution.Application.Catalog.Products
             }
 
             _context.ProductImages.Update(productImage);
-            return await _context.SaveChangesAsync();   
-
+            return await _context.SaveChangesAsync();
         }
 
         public async Task<ProductImageViewModel> GetImageById(int imageId)
         {
-            var image= await _context.ProductImages.FindAsync(imageId);
+            var image = await _context.ProductImages.FindAsync(imageId);
             if (image == null)
                 throw new EShopeException($"Cannot find an image with id:{imageId}");
-            var viewModel= new ProductImageViewModel()
-               {
-                   Caption = image.Caption,
-                   DateCreated = image.DateCreated,
-                   FileSize = image.FileSize,
-                   Id = image.Id,
-                   ImagePath = image.ImagePath,
-                   Isdefault = image.Isdefault,
-                   ProductId = image.ProductId,
-                   SortOrder = image.SortOrder
-
-
-               };
+            var viewModel = new ProductImageViewModel()
+            {
+                Caption = image.Caption,
+                DateCreated = image.DateCreated,
+                FileSize = image.FileSize,
+                Id = image.Id,
+                ImagePath = image.ImagePath,
+                Isdefault = image.Isdefault,
+                ProductId = image.ProductId,
+                SortOrder = image.SortOrder
+            };
 
             return viewModel;
         }
@@ -357,8 +314,6 @@ namespace eShopSolution.Application.Catalog.Products
                     Isdefault = i.Isdefault,
                     ProductId = i.ProductId,
                     SortOrder = i.SortOrder
-
-
                 }).ToListAsync();
         }
 
@@ -371,9 +326,6 @@ namespace eShopSolution.Application.Catalog.Products
             return await _context.SaveChangesAsync(); // chả về tất cả số bản ghi
         }
 
-
-
-
         // hàm để save Image
         private async Task<string> SaveFile(IFormFile file)
         {
@@ -381,9 +333,52 @@ namespace eShopSolution.Application.Catalog.Products
             var fileName = $"{Guid.NewGuid()}{Path.GetExtension(originalFileName)}";
             await _storageService.SaveFileAsync(file.OpenReadStream(), fileName);
             return fileName;
-
         }
 
-        
+        public async Task<PagedResult<ProductViewModel>> GetAllByCategoryId(string languageId, GetPublicProductPagingRequest request) // lấy của public nhe
+        {
+            // bước 1 :select join
+            var query = from p in _context.Products
+                        join pt in _context.ProductTranslations
+                        on p.Id equals pt.ProductId
+                        join pic in _context.ProductInCategories on p.Id equals pic.ProductId
+                        join c in _context.Categories on pic.CategoryId equals c.Id
+                        where pt.LanguageId == languageId
+                        select new { p, pt, pic };
+            // bước 1: filter theo điều kiện
+
+            if (request.CategoryId.HasValue && request.CategoryId.Value > 0)// HasValue mặc đinh là true
+            {
+                // using System.linq
+                query = query.Where(p => p.pic.CategoryId == request.CategoryId);//một trong só nhữ thằng này thì mới được
+            }
+            // bước 3: paging
+            int totalRow = await query.CountAsync(); // lấy ra tông số số dòng để phân trang   phải include using Microsoft.EntityFrameworkCore;
+            var data = await query.Skip((request.PageIndex - 1) * request.PageSize)
+                .Take(request.PageSize)// nếu PageIndex=2 và PageSize=20 thì bỏ qua 10 chỉ lấy 10 bẩn ghi hiện lên ko lấy tất để phù hợp với PageSize
+                .Select(x => new ProductViewModel()
+                {
+                    Id = x.p.Id,
+                    Name = x.pt.Name,
+                    DateCreated = x.p.DateCreated,
+                    Description = x.pt.Description,
+                    Details = x.pt.Details,
+                    LanguageId = x.pt.LanguageId,
+                    OriginalPrice = x.p.OriginalPrice,
+                    Price = x.p.Price,
+                    SeoAlias = x.pt.SeoAlias,
+                    SeoDescription = x.pt.SeoDescription,
+                    SeoTitle = x.pt.SeoTitle,
+                    Stock = x.p.Stock,
+                    ViewCount = x.p.ViewCount
+                }).ToListAsync(); // vì ta Async ở đây nên trên kia ta chỉ cần await để đẩy vào data là song  nhớ là ToListAsync nha vì bên PageRsult Item ta để là list
+                                  // bước 4: selecet and Project
+            var pagedResult = new PagedResult<ProductViewModel>()
+            {
+                TotalRecord = totalRow,
+                Item = data
+            };
+            return pagedResult;
+        }
     }
 }

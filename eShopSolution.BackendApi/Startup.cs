@@ -48,8 +48,8 @@ namespace eShopSolution.BackendApi
             .AddDefaultTokenProviders();
 
             //  KHAI BÁO DI
-            services.AddTransient<IPublicProductService, PublicProductService>();
-            services.AddTransient<IMangeProductService, MangeProductService>();
+            services.AddTransient<IProductService, ProductService>();
+
             services.AddTransient<IStorageService, FileStorageService>();
             services.AddTransient<UserManager<AppUser>, UserManager<AppUser>>();
             services.AddTransient<SignInManager<AppUser>, SignInManager<AppUser>>();

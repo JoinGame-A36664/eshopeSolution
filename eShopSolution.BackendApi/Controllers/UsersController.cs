@@ -12,6 +12,7 @@ namespace eShopSolution.BackendApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class UsersController : ControllerBase
     {
         // bắt đâu tiêm Di nhớ đăng kí bên startup của APi nhe
@@ -32,6 +33,7 @@ namespace eShopSolution.BackendApi.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
             var resultToken = await _userService.Authencate(request);
+
             if (string.IsNullOrEmpty(resultToken))
             {
                 return BadRequest("Username or password is incorrect");
@@ -40,7 +42,7 @@ namespace eShopSolution.BackendApi.Controllers
             return Ok(resultToken);
         }
 
-        [HttpPost("register")]
+        [HttpPost]
         [AllowAnonymous] // chưa đăng nhập vẫn gọi được cái này
         public async Task<IActionResult> Register([FromBody] RegisterRequest request)
         {
@@ -53,6 +55,14 @@ namespace eShopSolution.BackendApi.Controllers
             }
 
             return Ok();
+        }
+
+        // http://localhost/api/users/paging?pageIndex=1&pageSize=10&keyWord=   ví dụ đường dẫn
+        [HttpGet("paging")] // đặt alias(bí danh) cho nó để không trùng với thằng ở trên chỉ dành cho HttpGet
+        public async Task<IActionResult> GetAllPaging([FromQuery] GetUserPagingRequest request) // tất cả tham số đều lấy từ query ra khi ta để FromQuery
+        {                                            // ĐẺ FROM QUERY ĐỂ BÊN UserApiClient ta biding từ phương thức GetUsersPagings vào
+            var Users = await _userService.GetUserPaging(request); // thằng request này có languageId rồi nhe
+            return Ok(Users);
         }
     }
 }

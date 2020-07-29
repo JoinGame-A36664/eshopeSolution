@@ -9,6 +9,7 @@ using eShopeSolution.AddminApp.Services;
 using eShopSolution.ViewModels.System.Users;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Logging;
@@ -29,9 +30,22 @@ namespace eShopeSolution.AddminApp.Controllers
             _configuration = configuration;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index(string keyword, int pageIndex = 1, int pageSize = 10) // gán mặc định nếu không có giá trị nào ,pageSize được tính rồi nhe
         {
-            return View();
+            //phải add 1 view là viewName Index ,Template List ,Model class UserVm , use Layout chúng có sẵn tải về
+
+            // pageIndex và pageSize lấy trên query nhe
+            var sessions = HttpContext.Session.GetString("Token");
+            //từ Token này ta phải ra một cái Request
+            var request = new GetUserPagingRequest()
+            {
+                BearerToken = sessions,
+                PageIndex = pageIndex,
+                PageSize = pageSize,
+                KeyWord = keyword
+            };
+            var data = await _userApiClient.GetUsersPagings(request);
+            return View(data);
         }
 
         // đưa phương thức login lên cho view
@@ -61,6 +75,8 @@ namespace eShopeSolution.AddminApp.Controllers
                 IsPersistent = true  // là khi đăng nhập rồi mà tắt chương trình nó vẫn đăng nhập khi chạy lại
             };
 
+            HttpContext.Session.SetString("Token", token);  //phải add thêm modul token vào trong startup của project AdminApp
+
             await HttpContext.SignInAsync(
                     CookieAuthenticationDefaults.AuthenticationScheme,
                     userPrincipal,
@@ -73,6 +89,9 @@ namespace eShopeSolution.AddminApp.Controllers
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);// thực hiện Logout
+            //phải xóa thằng token đi để nó ko lưu thằng cũ khi đăng nhập lại mà chúng ta sẽ sử dụng token mới khi đăng nhập cũ xóa đi
+            HttpContext.Session.Remove("Token"); // 30' Token chưa hết thì Sesstion đã hết
+
             return RedirectToAction("Login", "User"); // logout song đi đén Login trong thư mục User
         }
 
