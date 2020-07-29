@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.Internal;
+
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -23,7 +23,5 @@ namespace eShopSolution.ViewModels.Catalog.ProductImages
         public int SortOrder { get; set; } // thứ tự của nó
 
         public long FileSize { get; set; }
-
-
     }
 }

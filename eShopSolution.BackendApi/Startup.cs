@@ -8,6 +8,9 @@ using eShopSolution.Application.Common;
 using eShopSolution.Application.System.Users;
 using eShopSolution.Data.EF;
 using eShopSolution.Data.Entities;
+using eShopSolution.ViewModels.System.Users;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -53,7 +56,13 @@ namespace eShopSolution.BackendApi
             services.AddTransient<RoleManager<AppRole>, RoleManager<AppRole>>();
             services.AddTransient<IUserService, UserService>();
 
-            services.AddControllers(); // đây là Api nên chỉ cần AddControllers thôi ko cần AddControllersWithViews làm gì vì ta chả cần view
+            // đây là Registor theo Di lẻ từng thằng 1
+            //   services.AddTransient<IValidator<LoginRequest>, LoginRequestValidator>();// Khai báo cho Validator theo DI
+            //   services.AddTransient<IValidator<RegisterRequest>, RegisterRequestValidator>();
+
+            // đây là registor theo Di cả đám cảu project luân
+            // đăng kí tất cả thằng Validator nào có trong cùng prioject  với LoginRequestValidator ,,   NHƯ KIỂU đăng kí thằng LoginRequest với LoginRequestValidator
+            services.AddControllers().AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<LoginRequestValidator>()); // thêm AddFluentValidation để sử dụng Vlidation tải từ nuget FluentValidation.AspNetCore
 
             // tải nuget Swashbuckle.AspNetCore để cấu hình Swashbuckle nó là cái giao diện demo thực thi các phương thức người dùng với databaseS
             services.AddSwaggerGen(c =>
