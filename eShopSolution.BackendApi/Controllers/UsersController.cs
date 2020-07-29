@@ -27,7 +27,7 @@ namespace eShopSolution.BackendApi.Controllers
 
         [HttpPost("authenticate")]
         [AllowAnonymous] // chưa đăng nhập vẫn gọi được cái này
-        public async Task<IActionResult> Authencate([FromForm] LoginRequest request)
+        public async Task<IActionResult> Authencate([FromBody] LoginRequest request)  // phải dùng FromBody cho Template
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -37,12 +37,12 @@ namespace eShopSolution.BackendApi.Controllers
                 return BadRequest("Username or password is incorrect");
             }
 
-            return Ok(new { token = resultToken });
+            return Ok(resultToken);
         }
 
-        [HttpPost("Register")]
+        [HttpPost("register")]
         [AllowAnonymous] // chưa đăng nhập vẫn gọi được cái này
-        public async Task<IActionResult> Register([FromForm] RegisterRequest request)
+        public async Task<IActionResult> Register([FromBody] RegisterRequest request)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);

@@ -62,7 +62,8 @@ namespace eShopSolution.BackendApi
 
             // đây là registor theo Di cả đám cảu project luân
             // đăng kí tất cả thằng Validator nào có trong cùng prioject  với LoginRequestValidator ,,   NHƯ KIỂU đăng kí thằng LoginRequest với LoginRequestValidator
-            services.AddControllers().AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<LoginRequestValidator>()); // thêm AddFluentValidation để sử dụng Vlidation tải từ nuget FluentValidation.AspNetCore
+            services.AddControllers()
+                .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<LoginRequestValidator>()); // thêm AddFluentValidation để sử dụng Vlidation tải từ nuget FluentValidation.AspNetCore
 
             // tải nuget Swashbuckle.AspNetCore để cấu hình Swashbuckle nó là cái giao diện demo thực thi các phương thức người dùng với databaseS
             services.AddSwaggerGen(c =>

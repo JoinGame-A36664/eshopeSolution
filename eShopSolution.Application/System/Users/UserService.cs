@@ -45,7 +45,8 @@ namespace eShopSolution.Application.System.Users
             {
                 new Claim(ClaimTypes.GivenName,user.FirstName),
                  new Claim(ClaimTypes.Email,user.Email),
-                 new Claim(ClaimTypes.Role,string.Join(";",roles)) // string.Join là nối tất cả các dối dượng lại thành một chuối cách nhau bới giấu ;
+                 new Claim(ClaimTypes.Role,string.Join(";",roles)), // string.Join là nối tất cả các dối dượng lại thành một chuối cách nhau bới giấu ;
+                 new Claim(ClaimTypes.Name,request.UserName)
             };
 
             // bắt đầu mã hóa Claim bằng Symmetric vào appseting của Api cài đặt
