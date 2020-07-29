@@ -34,7 +34,7 @@ namespace eShopeSolution.AddminApp
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options =>
                 {
-                    options.LoginPath = "/User/Login";// đường dẫn đến trang login khi chưa đăng nhập
+                    options.LoginPath = "/Login/Index";// đường dẫn đến trang login khi chưa đăng nhập
                     options.AccessDeniedPath = "/Account/Forbidden";  // AccessDeniedPath(từ chối chuy cập) thì về trang theo đường dẫn này /Account/Forbidden
                 });
 

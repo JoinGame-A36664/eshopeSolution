@@ -60,5 +60,19 @@ namespace eShopeSolution.AddminApp.Services
 
             return users;
         }
+
+        public async Task<bool> RegisterUser(RegisterRequest request)
+        {
+            // phải AddHttpClient vào startup của AdminAPp nhe
+            var client = _httpClientFactory.CreateClient();
+
+            client.BaseAddress = new Uri(_configuration["BaseAddress"]);
+            var json = JsonConvert.SerializeObject(request);
+            var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var response = await client.PostAsync($"/api/users", httpContent);
+
+            return response.IsSuccessStatusCode; // kiểm tra song neus succes là thành công
+        }
     }
 }

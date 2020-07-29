@@ -17,7 +17,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace eShopeSolution.AddminApp.Controllers
 {
-    public class UserController : Controller
+    public class UserController : BaseController  // đương nhiên nó sẽ chạy vào BaseController trước check rồi mới suống dưới thực hiện vì kế thừa song mới suống dưới
     {
         // tiếm tục tiêm Di
         private readonly IUserApiClient _userApiClient;
@@ -35,7 +35,7 @@ namespace eShopeSolution.AddminApp.Controllers
             //phải add 1 view là viewName Index ,Template List ,Model class UserVm , use Layout chúng có sẵn tải về
 
             // pageIndex và pageSize lấy trên query nhe
-            var sessions = HttpContext.Session.GetString("Token");
+            var sessions = HttpContext.Session.GetString("Token");  // thằng này cần thận null khi chưa đăng nhập nhe phải tạo ra cái đẻ check tất cả là BaseController
             //từ Token này ta phải ra một cái Request
             var request = new GetUserPagingRequest()
             {
@@ -48,41 +48,23 @@ namespace eShopeSolution.AddminApp.Controllers
             return View(data);
         }
 
-        // đưa phương thức login lên cho view
-
+        // đăng kí tài khoản biding từ
         [HttpGet]
-        public async Task<IActionResult> Login()
+        public IActionResult Create()
         {
-            // vào trang login là ta logout những section(phần) cũ đi
-            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            // tạo View với View Name : Create , Template Create ,Model là RegisterRequest và layout dùng chung
             return View();
         }
 
         [HttpPost]
-        public async Task<IActionResult> Login(LoginRequest request) // add refrence project model vào nhe
+        public async Task<IActionResult> Create(RegisterRequest request)
         {
             if (!ModelState.IsValid)
-                return View(ModelState);
-
-            var token = await _userApiClient.Authenticate(request);  // đó lấy ra được token ở request rồi
-
-            // giải mã token ra
-            var userPrincipal = this.ValidateToken(token); // chuyền token sang UserPrincipal
-            //https://docs.microsoft.com/en-us/aspnet/core/security/authentication/cookie?view=aspnetcore-3.1
-            var authProperties = new AuthenticationProperties // lấy tập Properties của cookies
-            {
-                ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(10),
-                IsPersistent = true  // là khi đăng nhập rồi mà tắt chương trình nó vẫn đăng nhập khi chạy lại
-            };
-
-            HttpContext.Session.SetString("Token", token);  //phải add thêm modul token vào trong startup của project AdminApp
-
-            await HttpContext.SignInAsync(
-                    CookieAuthenticationDefaults.AuthenticationScheme,
-                    userPrincipal,
-                    authProperties);
-
-            return RedirectToAction("Index", "Home");  // đi đến Index trong thư mục Home
+                return View();
+            var result = await _userApiClient.RegisterUser(request);
+            if (result)
+                return RedirectToAction("Index");  // nếu thành công thì chuyển tới phân trang là Index
+            return View(request);//nếu ko thành công ta chả về request để xem request
         }
 
         // nhớ cài đặt bên layout thằng action này thì mới logout được nhe
@@ -93,26 +75,6 @@ namespace eShopeSolution.AddminApp.Controllers
             HttpContext.Session.Remove("Token"); // 30' Token chưa hết thì Sesstion đã hết
 
             return RedirectToAction("Login", "User"); // logout song đi đén Login trong thư mục User
-        }
-
-        // hàm giải mã token
-        private ClaimsPrincipal ValidateToken(string jwToken)
-        {
-            // vào đây mà đọc
-            // https://docs.microsoft.com/en-us/aspnet/core/security/authentication/cookie?view=aspnetcore-3.1
-            IdentityModelEventSource.ShowPII = true;
-
-            SecurityToken validatedToken;
-            TokenValidationParameters validationParameters = new TokenValidationParameters();
-
-            validationParameters.ValidateLifetime = true;
-            // nhớ lấy cái phần Token cảu appSetting Api coppy sang AdminApp nhe
-            validationParameters.ValidAudience = _configuration["Tokens:Issuer"];
-            validationParameters.ValidIssuer = _configuration["Tokens:Issuer"];
-            validationParameters.IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Tokens:Key"]));
-
-            ClaimsPrincipal principal = new JwtSecurityTokenHandler().ValidateToken(jwToken, validationParameters, out validatedToken);
-            return principal;
         }
     }
 }

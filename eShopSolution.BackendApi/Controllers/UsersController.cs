@@ -29,7 +29,7 @@ namespace eShopSolution.BackendApi.Controllers
         [HttpPost("authenticate")]
         [AllowAnonymous] // chưa đăng nhập vẫn gọi được cái này
         public async Task<IActionResult> Authencate([FromBody] LoginRequest request)  // phải dùng FromBody cho Template
-        {
+        {  //Authencate(xác thực )
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
             var resultToken = await _userService.Authencate(request);

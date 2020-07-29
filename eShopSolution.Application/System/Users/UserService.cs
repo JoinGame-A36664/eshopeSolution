@@ -92,7 +92,7 @@ namespace eShopSolution.Application.System.Users
             var pagedResult = new PagedResult<UserVm>()
             {
                 TotalRecord = totalRow,
-                Item = data
+                Items = data
             };
 
             return pagedResult;
