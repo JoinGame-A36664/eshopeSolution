@@ -157,7 +157,9 @@ namespace eShopSolution.Application.Catalog.Products
                                   // bước 4: selecet and Project
             var pagedResult = new PagedResult<ProductViewModel>()
             {
-                TotalRecord = totalRow,
+                TotalRecords = totalRow,
+                PageSize = request.PageSize,
+                PageIndex = request.PageIndex,
                 Items = data
             };
             return pagedResult;
@@ -375,7 +377,9 @@ namespace eShopSolution.Application.Catalog.Products
                                   // bước 4: selecet and Project
             var pagedResult = new PagedResult<ProductViewModel>()
             {
-                TotalRecord = totalRow,
+                TotalRecords = totalRow,
+                PageSize = request.PageSize,
+                PageIndex = request.PageIndex,
                 Items = data
             };
             return pagedResult;
