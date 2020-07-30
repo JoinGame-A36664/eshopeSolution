@@ -30,7 +30,7 @@ namespace eShopeSolution.AddminApp.Controllers
             _configuration = configuration;
         }
 
-        public async Task<IActionResult> Index(string keyword, int pageIndex = 1, int pageSize = 5) // gán mặc định nếu không có giá trị nào ,pageSize được tính rồi nhe tính cho phân trang
+        public async Task<IActionResult> Index(string keyword, int pageIndex = 1, int pageSize = 10) // gán mặc định nếu không có giá trị nào ,pageSize được tính rồi nhe tính cho phân trang
         {
             //phải add 1 view là viewName Index ,Template List ,Model class UserVm , use Layout chúng có sẵn tải về
 
@@ -120,6 +120,29 @@ namespace eShopeSolution.AddminApp.Controllers
             HttpContext.Session.Remove("Token"); // 30' Token chưa hết thì Sesstion đã hết
 
             return RedirectToAction("Login", "User"); // logout song đi đén Login trong thư mục User
+        }
+
+        // delete user
+        [HttpGet]
+        public IActionResult Delete(Guid id)
+        {
+            return View(new UserDeleteRequest()
+            {
+                Id = id,
+            });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Delete(UserDeleteRequest request)  // lấy request từ thằng backeEnd thông qua thằng UserApiClient
+        {
+            if (!ModelState.IsValid)
+                return View();
+            var result = await _userApiClient.Delete(request.Id);
+            if (result.IsSuccessed)
+                return RedirectToAction("Index");  // nếu thành công thì chuyển tới phân trang là Index
+
+            ModelState.AddModelError("", result.Message);// Message trên Api nó chuyền suống được
+            return View(request);//nếu ko thành công ta chả về request để xem request
         }
     }
 }

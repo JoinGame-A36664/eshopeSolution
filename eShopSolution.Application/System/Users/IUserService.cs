@@ -22,5 +22,7 @@ namespace eShopSolution.Application.System.Users
         Task<ApiResult<PagedResult<UserVm>>> GetUserPaging(GetUserPagingRequest request); // phườn thức này lấy ra một user và trả về một model phân trang
 
         Task<ApiResult<UserVm>> GetById(Guid id);
+
+        Task<ApiResult<bool>> Delete(Guid Id);
     }
 }
