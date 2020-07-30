@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
@@ -9,6 +10,7 @@ using Microsoft.AspNetCore.Mvc.Filters;
 namespace eShopeSolution.AddminApp.Controllers
 {
     // thằng này có tác dụng check các exception  chả nhẽ bây giờ chúng ta lại đến từng thằng check ta tạo ra thằng này để check tất cả
+    [Authorize] // phải đăng nhập mới cho vào
     public class BaseController : Controller
     {
         public override void OnActionExecuting(ActionExecutingContext context)

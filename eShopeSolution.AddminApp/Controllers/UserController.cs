@@ -34,18 +34,15 @@ namespace eShopeSolution.AddminApp.Controllers
         {
             //phải add 1 view là viewName Index ,Template List ,Model class UserVm , use Layout chúng có sẵn tải về
 
-            // pageIndex và pageSize lấy trên query nhe
-            var sessions = HttpContext.Session.GetString("Token");  // thằng này cần thận null khi chưa đăng nhập nhe phải tạo ra cái đẻ check tất cả là BaseController
             //từ Token này ta phải ra một cái Request
             var request = new GetUserPagingRequest()
             {
-                BearerToken = sessions,
                 PageIndex = pageIndex,
                 PageSize = pageSize,
                 KeyWord = keyword
             };
             var data = await _userApiClient.GetUsersPagings(request);
-            return View(data);
+            return View(data.ResultObj);
         }
 
         // đăng kí tài khoản biding từ
@@ -62,9 +59,48 @@ namespace eShopeSolution.AddminApp.Controllers
             if (!ModelState.IsValid)
                 return View();
             var result = await _userApiClient.RegisterUser(request);
-            if (result)
+            if (result.IsSuccessed)
                 return RedirectToAction("Index");  // nếu thành công thì chuyển tới phân trang là Index
+
+            ModelState.AddModelError("", result.Message);// Message trên Api nó chuyền suống được
             return View(request);//nếu ko thành công ta chả về request để xem request
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Edit(Guid id)
+        {
+            //add view : ViewName=Edit Template=Edit ModelClass= UserUpdate  chọn layout chung
+
+            var result = await _userApiClient.GetById(id); //nhớ viết thêm getById bên thằng UserController của Api
+            if (result.IsSuccessed)
+            {
+                var user = result.ResultObj;
+                var updateRequest = new UserUpdateRequest()
+                {
+                    Dob = user.Dob,
+                    Email = user.Email,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    PhoneNumber = user.PhoneNumber,
+                    Id = id
+                };
+                return View(updateRequest); // nếu thành công thì chả về đối tượng User được update luân
+            }
+            return RedirectToAction("Error", "Home"); // nếu không trả về trang Error của Home
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(UserUpdateRequest request)
+        {
+            if (!ModelState.IsValid)
+                return View();
+
+            var result = await _userApiClient.UpdateUser(request.Id, request);
+            if (result.IsSuccessed)
+                return RedirectToAction("Index");
+
+            ModelState.AddModelError("", result.Message);  // đây là lỗi của Model này
+            return View(request);
         }
 
         // nhớ cài đặt bên layout thằng action này thì mới logout được nhe
