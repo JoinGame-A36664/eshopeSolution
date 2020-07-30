@@ -10,14 +10,16 @@ namespace eShopeSolution.AddminApp.Services
 {
     public interface IUserApiClient
     {
-        Task<ApiResult<string>> Authenticate(LoginRequest request);
+        Task<ApiResult<string>> Authenticate(LoginRequest request);// để đọc cái Api Delete của backEnd
 
-        Task<ApiResult<PagedResult<UserVm>>> GetUsersPagings(GetUserPagingRequest request);
+        Task<ApiResult<PagedResult<UserVm>>> GetUsersPagings(GetUserPagingRequest request);// để đọc cái Api Delete của backEnd
 
-        Task<ApiResult<bool>> UpdateUser(Guid id, UserUpdateRequest request);
+        Task<ApiResult<bool>> UpdateUser(Guid id, UserUpdateRequest request);// để đọc cái Api Delete của backEnd
 
-        Task<ApiResult<bool>> RegisterUser(RegisterRequest request);
+        Task<ApiResult<bool>> RegisterUser(RegisterRequest request);// để đọc cái Api Delete của backEnd
 
-        Task<ApiResult<UserVm>> GetById(Guid id);
+        Task<ApiResult<UserVm>> GetById(Guid id);// để đọc cái Api Delete của backEnd
+
+        Task<ApiResult<bool>> Delete(Guid Id);  // để đọc cái Api Delete của backEnd
     }
 }

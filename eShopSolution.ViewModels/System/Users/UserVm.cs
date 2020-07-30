@@ -8,7 +8,7 @@ namespace eShopSolution.ViewModels.System.Users
     public class UserVm
     {
         // muốn show ra gì thì ch nó vào viewModel  điều đó là hiển nhiên product chúng ta cũng làm như thees
-
+        [Display(Name ="Id")]
         public Guid Id { get; set; }
 
         [Display(Name = "Tên")]
