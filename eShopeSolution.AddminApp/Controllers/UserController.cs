@@ -30,6 +30,7 @@ namespace eShopeSolution.AddminApp.Controllers
             _configuration = configuration;
         }
 
+        //ĐÂY LÀ TÌM KIẾM VƠI KEYWORD BÊN Default đã thự hiện cộng key word nếu thấy để gữ lại đối tượng khi tìm thấy mà nó vẫn sử dụng được phân trang ,chỉ khi reset nó mới ko cộng keyword sang Default mà xem nhe
         public async Task<IActionResult> Index(string keyword, int pageIndex = 1, int pageSize = 10) // gán mặc định nếu không có giá trị nào ,pageSize được tính rồi nhe tính cho phân trang
         {
             //phải add 1 view là viewName Index ,Template List ,Model class UserVm , use Layout chúng có sẵn tải về
@@ -42,6 +43,9 @@ namespace eShopeSolution.AddminApp.Controllers
                 KeyWord = keyword
             };
             var data = await _userApiClient.GetUsersPagings(request);
+            // để giữ lại giá trị hiển thị tren ô tìm kiếm ta dùng viewBag chuyền về cho view
+            ViewBag.keyword = keyword;// tự động view sẽ nhận được
+
             return View(data.ResultObj);
         }
 
@@ -119,7 +123,7 @@ namespace eShopeSolution.AddminApp.Controllers
             //phải xóa thằng token đi để nó ko lưu thằng cũ khi đăng nhập lại mà chúng ta sẽ sử dụng token mới khi đăng nhập cũ xóa đi
             HttpContext.Session.Remove("Token"); // 30' Token chưa hết thì Sesstion đã hết
 
-            return RedirectToAction("Login", "User"); // logout song đi đén Login trong thư mục User
+            return RedirectToAction("Index", "Login"); // logout song đi đén Action là Index và Controller là Login
         }
 
         // delete user
