@@ -34,9 +34,9 @@ namespace eShopSolution.BackendApi.Controllers
                 return BadRequest(ModelState);
             var resultToken = await _userService.Authencate(request);
 
-            if (string.IsNullOrEmpty(resultToken))
+            if (string.IsNullOrEmpty(resultToken.ResultObj))
             {
-                return BadRequest("Username or password is incorrect");
+                return BadRequest(resultToken);
             }
 
             return Ok(resultToken);
@@ -49,12 +49,27 @@ namespace eShopSolution.BackendApi.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
             var result = await _userService.Register(request);
-            if (!result)
+            if (!result.IsSuccessed)
             {
-                return BadRequest("Regisster is unsuccessful");
+                return BadRequest(result);
             }
 
-            return Ok();
+            return Ok(result);
+        }
+
+        //PUT: http://localhost/api/users/id
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(Guid id, [FromBody] UserUpdateRequest request)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var result = await _userService.Update(id, request);
+            if (!result.IsSuccessed)
+            {
+                return BadRequest(result);
+            }
+            return Ok(result);
         }
 
         // http://localhost/api/users/paging?pageIndex=1&pageSize=10&keyWord=   ví dụ đường dẫn
@@ -63,6 +78,13 @@ namespace eShopSolution.BackendApi.Controllers
         {                                            // ĐẺ FROM QUERY ĐỂ BÊN UserApiClient ta biding từ phương thức GetUsersPagings vào
             var Users = await _userService.GetUserPaging(request); // thằng request này có languageId rồi nhe
             return Ok(Users);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById(Guid id)
+        {
+            var user = await _userService.GetById(id);
+            return Ok(user);
         }
     }
 }

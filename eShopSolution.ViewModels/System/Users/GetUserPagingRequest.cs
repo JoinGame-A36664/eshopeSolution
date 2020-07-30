@@ -5,7 +5,7 @@ using System.Text;
 
 namespace eShopSolution.ViewModels.System.Users
 {
-    public class GetUserPagingRequest : PagingRequestBase  // kế thừa để lấy thêm các thuộc tính pageindex và pageSize
+    public class GetUserPagingRequest : PagingRequestBase
     {
         public string KeyWord { get; set; } // tìm kiếm theo KeyWord
     }

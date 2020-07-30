@@ -46,10 +46,10 @@ namespace eShopeSolution.AddminApp.Controllers
             if (!ModelState.IsValid)
                 return View(ModelState);
 
-            var token = await _userApiClient.Authenticate(request);  // đó lấy ra được token ở request rồi
+            var result = await _userApiClient.Authenticate(request);  // đó lấy ra được token ở request rồi
 
             // giải mã token ra
-            var userPrincipal = this.ValidateToken(token); // chuyền token sang UserPrincipal
+            var userPrincipal = this.ValidateToken(result.ResultObj); // chuyền token sang UserPrincipal
             //https://docs.microsoft.com/en-us/aspnet/core/security/authentication/cookie?view=aspnetcore-3.1
             var authProperties = new AuthenticationProperties // lấy tập Properties của cookies
             {
@@ -57,7 +57,7 @@ namespace eShopeSolution.AddminApp.Controllers
                 IsPersistent = false  // là khi đăng nhập rồi mà tắt chương trình nó vẫn đăng nhập khi chạy lại
             };
 
-            HttpContext.Session.SetString("Token", token);  //phải add thêm modul token vào trong startup của project AdminApp
+            HttpContext.Session.SetString("Token", result.ResultObj);  //phải add thêm modul token vào trong startup của project AdminApp
 
             await HttpContext.SignInAsync(
                     CookieAuthenticationDefaults.AuthenticationScheme,

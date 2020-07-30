@@ -10,8 +10,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace eShopeSolution.AddminApp.Controllers
 {
-    [Authorize]// không được vào khi chưa đăng nhập    // nó chính là cái ổ khóa của Swagger
-    public class HomeController : Controller
+    public class HomeController : BaseController  // để check luân cái token ,ta check nó trong BaseController đã để [Authorize]
     {
         private readonly ILogger<HomeController> _logger;
 

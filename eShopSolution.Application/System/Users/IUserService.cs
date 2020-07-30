@@ -10,11 +10,17 @@ namespace eShopSolution.Application.System.Users
 {
     public interface IUserService
     {
-        Task<string> Authencate(LoginRequest request);
+        // thằng ApiResult ta tạo ra để check và thông báo một message hoặc trả về một object theo kiểu mà cnos chuyền vào
 
-        Task<bool> Register(RegisterRequest request);
+        Task<ApiResult<string>> Authencate(LoginRequest request);
+
+        Task<ApiResult<bool>> Update(Guid id, UserUpdateRequest request);
+
+        Task<ApiResult<bool>> Register(RegisterRequest request);
 
         // phương thức lấy tất cả User ra
-        Task<PagedResult<UserVm>> GetUserPaging(GetUserPagingRequest request); // phườn thức này lấy ra một user và trả về một model phân trang
+        Task<ApiResult<PagedResult<UserVm>>> GetUserPaging(GetUserPagingRequest request); // phườn thức này lấy ra một user và trả về một model phân trang
+
+        Task<ApiResult<UserVm>> GetById(Guid id);
     }
 }

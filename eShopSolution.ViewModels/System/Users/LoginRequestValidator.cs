@@ -18,7 +18,7 @@ namespace eShopSolution.ViewModels.System.Users
         {
             // xem trong https://docs.fluentvalidation.net/en/latest/built-in-validators.html
             RuleFor(x => x.UserName).NotEmpty().WithMessage("User Name is Required"); // không được để User Name Rỗng ,notEmpty có cả notNull còn notNull ko có empty
-            RuleFor(x => x.Password).NotEmpty().WithMessage("Password is Required").MinimumLength(8).WithMessage("Password is at least 8 charactors long");
+            RuleFor(x => x.Password).NotEmpty().WithMessage("Password is Required").MinimumLength(8).WithMessage("Password must be at least eight characters long, have special characters and contain at least one uppercase letter");
         }
     }
 }
