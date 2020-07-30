@@ -36,7 +36,7 @@ namespace eShopSolution.Application.System.Users
         {
             var user = await _userManager.FindByNameAsync(request.UserName);
             if (user == null)
-                return null;
+                return new ApiErrorResult<string>("Tài Khoản Không Tồn Tại");
 
             var result = await _signInManager.PasswordSignInAsync(user, request.Password, request.RememberMe, true); // bằng true là cùa lockoutOnfilure là khi login nhiều quá ta sẽ khóa tài khoản lại
             if (!result.Succeeded)// NẾU đăng nhập thành công
@@ -86,7 +86,7 @@ namespace eShopSolution.Application.System.Users
             var user = await _userManager.FindByIdAsync(id.ToString());
             if (user == null)
             {
-                return new ApiErrorResult<UserVm>("User không tồn tại");
+                return new ApiErrorResult<UserVm>("Tài Khoản không tồn tại");
             }
             var userVm = new UserVm()
             {
@@ -102,12 +102,12 @@ namespace eShopSolution.Application.System.Users
         }
 
         // phương thức lấy ra danh sách user     (nó sẽ lấy ra user và trả về một model phân trang)
-        public async Task<ApiResult<PagedResult<UserVm>>> GetUserPaging(GetUserPagingRequest request)
+        public async Task<ApiResult<PagedResult<UserVm>>> GetUserPaging(GetUserPagingRequest request)  // có nhận keyword từ request nhe vào trong nó mà xem
         {
             var query = _userManager.Users;
             if (!string.IsNullOrEmpty(request.KeyWord))// chỉ string mới được sử dụng phương thức này nhe
             {
-                // tìm giống hệt product bằng keyWord
+                // Tìm kiếm bằng keyword hiện tại ta đang cho shearch bằng user name và phoneNumgber ta có thẻ cho thêm ở đây nhe
                 query = query.Where(x => x.UserName.Contains(request.KeyWord)
                 || x.PhoneNumber.Contains(request.KeyWord));
             }

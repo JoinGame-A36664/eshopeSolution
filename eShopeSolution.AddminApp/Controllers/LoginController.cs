@@ -44,12 +44,23 @@ namespace eShopeSolution.AddminApp.Controllers
         public async Task<IActionResult> Index(LoginRequest request) // add refrence project model vào nhe
         {
             if (!ModelState.IsValid)
-                return View(ModelState);
+            {
+                ModelState.AddModelError("", "Tài Khoản Và Mật Khẩu Không Chính Xác");
+                return View();
+            }
 
             var result = await _userApiClient.Authenticate(request);  // đó lấy ra được token ở request rồi
 
+            //check lỗi khi đăng nhập sai mà khồn lấy dược token thì nó sẽ bị null nên phải check nó ở đây
+            if (result.ResultObj == null)
+            {
+                ModelState.AddModelError("", result.Message); // riêng ModelState var khong thể chứa được nhe nhớ đấy
+                return View();
+            }
+
             // giải mã token ra
             var userPrincipal = this.ValidateToken(result.ResultObj); // chuyền token sang UserPrincipal
+
             //https://docs.microsoft.com/en-us/aspnet/core/security/authentication/cookie?view=aspnetcore-3.1
             var authProperties = new AuthenticationProperties // lấy tập Properties của cookies
             {

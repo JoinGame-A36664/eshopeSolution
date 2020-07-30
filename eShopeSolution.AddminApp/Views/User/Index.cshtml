@@ -15,10 +15,29 @@
         <li class="breadcrumb-item active">Danh sách người dùng</li>
     </ol>
 
-    <div class="card mb-4">
+    <div class="card mb-12">
         <div class="card-header">
 
-            <a class="btn btn-success" asp-action="Create" asp-controller="User">Tạo mới</a>
+            <div class="row">
+                <div class="col-md-6"><a class="btn btn-success" asp-action="Create" asp-controller="User">Tạo mới</a></div>
+
+                <div class="col-md-6">
+                    <!--md có nghĩa là midium-->
+                    <form asp-action="Index" method="get">
+                        <div class="row">
+                            <!-- Method là get nó sẽ chuyền tham số trên query-->
+                            <div class="col-md-9">
+                                <input type="text" value="@ViewBag.keyword " name="keyword" class="form-control" /> <!--name =keword chính là tham số-->
+                                <!--để value là  ViewBag.keyword  để nó giữ được giá trị key trên ô tìm kiếm , ViewBag.keyword  được lấy từ controller tương ứng-->
+                            </div>
+                            <div class="col-md-3">
+                                <button type="submit" class="btn btn-primary">Tìm</button>
+                                <button type="button" onclick="window.location.href='/User/Index'" class="btn btn-secondary">Tải Lại</button>  <!-- khi click thì nó đến đường dẫn kia như kiểu đi lại trang nên gọi là reset-->
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
         <div class="card-body">
             <div class="table-responsive">
