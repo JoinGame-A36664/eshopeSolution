@@ -30,7 +30,7 @@ namespace eShopeSolution.AddminApp.Controllers
             _configuration = configuration;
         }
 
-        public async Task<IActionResult> Index(string keyword, int pageIndex = 1, int pageSize = 10) // gán mặc định nếu không có giá trị nào ,pageSize được tính rồi nhe
+        public async Task<IActionResult> Index(string keyword, int pageIndex = 1, int pageSize = 5) // gán mặc định nếu không có giá trị nào ,pageSize được tính rồi nhe tính cho phân trang
         {
             //phải add 1 view là viewName Index ,Template List ,Model class UserVm , use Layout chúng có sẵn tải về
 
@@ -43,6 +43,15 @@ namespace eShopeSolution.AddminApp.Controllers
             };
             var data = await _userApiClient.GetUsersPagings(request);
             return View(data.ResultObj);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Details(Guid Id) // lấy ra Id nhớ Index cũng phải có Id nhe
+        {
+            // add View với View Name= Details , Template=Details , Model class=UserVm , và layout dùng chung
+
+            var result = await _userApiClient.GetById(Id);
+            return View(result.ResultObj);
         }
 
         // đăng kí tài khoản biding từ
@@ -67,7 +76,7 @@ namespace eShopeSolution.AddminApp.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Edit(Guid id)
+        public async Task<IActionResult> Edit(Guid id)// lấy ra Id nhớ Index cũng phải có Id nhe
         {
             //add view : ViewName=Edit Template=Edit ModelClass= UserUpdate  chọn layout chung
 

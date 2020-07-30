@@ -75,6 +75,9 @@
                     </tbody>
                 </table>
             </div>
+            <!-- vào đây mà đọc cách sử dụng Tag Helper-->
+            <!--https://docs.microsoft.com/en-us/aspnet/core/mvc/views/view-components?view=aspnetcore-3.1-->
+            @await Component.InvokeAsync("Pager", Model)
         </div>
     </div>
 </div>

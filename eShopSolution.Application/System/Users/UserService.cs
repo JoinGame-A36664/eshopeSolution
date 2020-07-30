@@ -80,7 +80,8 @@ namespace eShopSolution.Application.System.Users
                 FirstName = user.FirstName,
                 Dob = user.DOB,
                 Id = user.Id,
-                LastName = user.LastName
+                LastName = user.LastName,
+                UserName = user.UserName
             };
             return new ApiSuccessResult<UserVm>(userVm);
         }
@@ -110,7 +111,9 @@ namespace eShopSolution.Application.System.Users
                                   // bước 4: selecet and Project
             var pagedResult = new PagedResult<UserVm>()
             {
-                TotalRecord = totalRow,
+                TotalRecords = totalRow,
+                PageIndex = request.PageIndex,
+                PageSize = request.PageSize,
                 Items = data
             };
 
