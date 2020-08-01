@@ -20,7 +20,7 @@ namespace eShopSolution.Application.System.Users
         // phải config bên Startup của project Api nha như kiểu Di ý
 
         private readonly UserManager<AppUser> _userManager;
-        private readonly SignInManager<AppUser> _signInManager;
+        private readonly SignInManager<AppUser> _signInManager; // thằng này phải cài nuget mới có này
         private readonly RoleManager<AppRole> _roleManager;
         private readonly IConfiguration _config;
 
@@ -39,9 +39,9 @@ namespace eShopSolution.Application.System.Users
                 return new ApiErrorResult<string>("Tài Khoản Không Tồn Tại");
 
             var result = await _signInManager.PasswordSignInAsync(user, request.Password, request.RememberMe, true); // bằng true là cùa lockoutOnfilure là khi login nhiều quá ta sẽ khóa tài khoản lại
-            if (!result.Succeeded)// NẾU đăng nhập thành công
+            if (!result.Succeeded)// NẾUn ko đăng nhập thành công
             {
-                return null;
+                return new ApiErrorResult<string>("Mật Khẩu Tài Khoản Không Đúng"); // trả về một object error
             }
             var roles = await _userManager.GetRolesAsync(user); // lấy một list role của user
             var claims = new[] //claims yêu cầu trả lại
@@ -63,6 +63,7 @@ namespace eShopSolution.Application.System.Users
                 expires: DateTime.Now.AddHours(3),
                 signingCredentials: creds);
 
+            //ApiSuccessResult là con của ApiResult nên có thể trả về con nó
             return new ApiSuccessResult<string>(new JwtSecurityTokenHandler().WriteToken(token));
         }
 
@@ -88,6 +89,7 @@ namespace eShopSolution.Application.System.Users
             {
                 return new ApiErrorResult<UserVm>("Tài Khoản không tồn tại");
             }
+            var roles = await _userManager.GetRolesAsync(user); // lấy ra role của user
             var userVm = new UserVm()
             {
                 Email = user.Email,
@@ -96,7 +98,8 @@ namespace eShopSolution.Application.System.Users
                 Dob = user.DOB,
                 Id = user.Id,
                 LastName = user.LastName,
-                UserName = user.UserName
+                UserName = user.UserName,
+                Roles = roles
             };
             return new ApiSuccessResult<UserVm>(userVm);
         }
@@ -109,7 +112,7 @@ namespace eShopSolution.Application.System.Users
             {
                 // Tìm kiếm bằng keyword hiện tại ta đang cho shearch bằng user name và phoneNumgber ta có thẻ cho thêm ở đây nhe
                 query = query.Where(x => x.UserName.Contains(request.KeyWord)
-                || x.PhoneNumber.Contains(request.KeyWord));
+                || x.PhoneNumber.Contains(request.KeyWord) || x.Email.Contains(request.KeyWord) || x.LastName.Contains(request.KeyWord));
             }
             int totalRow = await query.CountAsync(); // lấy ra tông số số dòng để phân trang
             var data = await query.Skip((request.PageIndex - 1) * request.PageSize)
@@ -163,6 +166,42 @@ namespace eShopSolution.Application.System.Users
                 return new ApiSuccessResult<bool>();
             }
             return new ApiErrorResult<bool>("Đăng kí không thành công");
+        }
+
+        // phương thức Role
+        public async Task<ApiResult<bool>> RoleAssign(Guid Id, RoleAssignRequest request)
+        {
+            // lấy user
+            var user = await _userManager.FindByIdAsync(Id.ToString());
+            if (user == null) // nếu user không tồn tại
+            {
+                return new ApiErrorResult<bool>("Tài khoản không tồn tại");
+            }
+
+            // selected bằng false là đã tích hay chưa // có nghĩa là khi ta nhán checkbox không còn tích thì nó sẽ có Selected bằng false và xóa quyền ,kể cả chưa tích cũng xóa
+            var removedRoles = request.Roles.Where(x => x.Selected == false).Select(x => x.Name).ToList(); //vào danh sách roles lấy ra thằng nào không Selected có nghĩa là bằng false và lấy cái name của thằng đấy ra
+                                                                                                           // nhớ là Roles  ,chuyền vào user và danh sách các role
+
+            foreach (var roleName in removedRoles)
+            {
+                if (await _userManager.IsInRoleAsync(user, roleName) == true)  // user có có roleName
+                {
+                    await _userManager.RemoveFromRoleAsync(user, roleName); // RemoveFromRolesAsync nó tính theo Name lên phải lấy Name ra
+                }
+            }
+
+            // trong trường hợp thằng nào đã có tồn tại , có nghĩa là khi ta tích vào check box nó sẽ cho Selected bằng true
+            var addedRoles = request.Roles.Where(x => x.Selected == true).Select(x => x.Name).ToList();
+            foreach (var roleName in addedRoles)
+            {
+                // bắt buộc chưa nằm trong cái role mới add vào role
+                if (await _userManager.IsInRoleAsync(user, roleName) == false)
+                {
+                    await _userManager.AddToRoleAsync(user, roleName); // ở đay là add từng role nên không có s nhe
+                }
+            }
+
+            return new ApiSuccessResult<bool>();
         }
 
         public async Task<ApiResult<bool>> Update(Guid id, UserUpdateRequest request)

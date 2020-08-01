@@ -70,11 +70,11 @@ namespace eShopeSolution.AddminApp.Services
             var sessions = _httpContextAccessor.HttpContext.Session.GetString("Token");
             var client = _httpClientFactory.CreateClient();
             client.BaseAddress = new Uri(_configuration["BaseAddress"]);
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", sessions);   // Phải add
-            var response = await client.GetAsync($"/api/users/{id}");
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", sessions);   // Phải add ,nhớ cái khi đăng nhập ở Swagger ta phải thêm Bearer + Token mới đăng nhạp được
+            var response = await client.GetAsync($"/api/users/{id}"); // thằng này chạy 5001 là đúng vì nó lấy Bearer token của swagger nằm trong cổng 5001
             var body = await response.Content.ReadAsStringAsync();
             if (response.IsSuccessStatusCode)
-                return JsonConvert.DeserializeObject<ApiSuccessResult<UserVm>>(body);
+                return JsonConvert.DeserializeObject<ApiSuccessResult<UserVm>>(body); //nó convert thằng body sang ApiSuccessResult<UserVm> , nó sẽ tự động lấy các thuộc tinh của tương thích của body
 
             return JsonConvert.DeserializeObject<ApiErrorResult<UserVm>>(body);
         }
@@ -114,6 +114,27 @@ namespace eShopeSolution.AddminApp.Services
             var result = await response.Content.ReadAsStringAsync();
             if (response.IsSuccessStatusCode)
                 return JsonConvert.DeserializeObject<ApiSuccessResult<bool>>(result);
+            return JsonConvert.DeserializeObject<ApiErrorResult<bool>>(result);
+        }
+
+        // phương thức role cho frontend
+        public async Task<ApiResult<bool>> RoleAssign(Guid Id, RoleAssignRequest request)
+        {
+            var client = _httpClientFactory.CreateClient();
+            client.BaseAddress = new Uri(_configuration["BaseAddress"]);
+            var sessions = _httpContextAccessor.HttpContext.Session.GetString("Token");
+
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", sessions);
+
+            var json = JsonConvert.SerializeObject(request);
+            var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
+
+            // đây chính là đường dẫn kết nối với role của tầng Backend và lấy về response mang về đây sử lý tiếp
+            var response = await client.PutAsync($"/api/users/{Id}/roles", httpContent);
+            var result = await response.Content.ReadAsStringAsync();
+            if (response.IsSuccessStatusCode)
+                return JsonConvert.DeserializeObject<ApiSuccessResult<bool>>(result);
+
             return JsonConvert.DeserializeObject<ApiErrorResult<bool>>(result);
         }
 

@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Text;
 
 namespace eShopSolution.ViewModels.System.Users
 {
     public class UserVm
     {
         // muốn show ra gì thì ch nó vào viewModel  điều đó là hiển nhiên product chúng ta cũng làm như thees
-        [Display(Name ="Id")]
+        [Display(Name = "Id")]
         public Guid Id { get; set; }
 
         [Display(Name = "Tên")]
@@ -28,5 +27,7 @@ namespace eShopSolution.ViewModels.System.Users
 
         [Display(Name = "Ngày Sinh")]
         public DateTime Dob { get; set; }
+
+        public IList<string> Roles { get; set; }
     }
 }
