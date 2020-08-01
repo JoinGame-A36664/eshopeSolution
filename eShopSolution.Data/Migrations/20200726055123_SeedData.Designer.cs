@@ -9,7 +9,7 @@ using eShopSolution.Data.EF;
 
 namespace eShopSolution.Data.Migrations
 {
-    [DbContext(typeof(EShopDBContext))]
+    [DbContext(typeof(EShopDbContext))]
     [Migration("20200726055123_SeedData")]
     partial class SeedData
     {

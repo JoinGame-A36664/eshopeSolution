@@ -9,9 +9,9 @@ using System.Text;
 namespace eShopSolution.Data.EF
 {
     // vào đây https://docs.microsoft.com/en-us/ef/core/miscellaneous/cli/dbcontext-creation
-    public class EShopDbContextFactory : IDesignTimeDbContextFactory<EShopDBContext>  // nó nối với khung ta tạo tên EShopDBContext để kết nối với database thông qua appsettings
+    public class EShopDbContextFactory : IDesignTimeDbContextFactory<EShopDbContext>  // nó nối với khung ta tạo tên EShopDBContext để kết nối với database thông qua appsettings
     {
-        public EShopDBContext CreateDbContext(string[] args)
+        public EShopDbContext CreateDbContext(string[] args)
         {
 
             // cấu hình đường dẫn tời file json là appsettings để lấy được ConectionString để kết nối với database
@@ -24,10 +24,10 @@ namespace eShopSolution.Data.EF
             // cấu hình ở trên giờ lấy ra để sử dụng
             var ConectionString = configuration.GetConnectionString("eShopSolutionDb");// đưa tên của ConectionString vào
 
-            var optionsBuilder = new DbContextOptionsBuilder<EShopDBContext>();
+            var optionsBuilder = new DbContextOptionsBuilder<EShopDbContext>();
             optionsBuilder.UseSqlServer(ConectionString);// chuyền ConectionString vào 
 
-            return new EShopDBContext(optionsBuilder.Options);
+            return new EShopDbContext(optionsBuilder.Options);
         }
     }
 }

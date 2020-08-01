@@ -21,11 +21,11 @@ namespace eShopSolution.Application.Catalog.Products
         // hiện tại là đang sử dụng theo DI đã được học ở khóa cơ bản rồi nha
 
         // đây là đang sử dụng cách 1 bên DI nhe mở khóa cơ bản ra mà xem
-        private readonly EShopDBContext _context;// thằng này có tác dụng kết nối với database để ta thực hiện các chức năng bên dưới
+        private readonly EShopDbContext _context;// thằng này có tác dụng kết nối với database để ta thực hiện các chức năng bên dưới
 
         private readonly IStorageService _storageService;
 
-        public ProductService(EShopDBContext context, IStorageService storageService) // phải refrnece từ tầng data để lấy EShopDBContext
+        public ProductService(EShopDbContext context, IStorageService storageService) // phải refrnece từ tầng data để lấy EShopDBContext
         {
             _context = context; // thằng Di nó sẽ tự tiêm vào đây cho chúng ta và
 

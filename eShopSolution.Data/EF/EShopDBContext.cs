@@ -17,7 +17,7 @@ namespace eShopSolution.Data.EF
 
 
     // ban đầu kế thừa DbContext của thằng Microsoft.EntityFrameworkCore;
-    public class EShopDBContext : IdentityDbContext<AppUser,AppRole,Guid> // sau đó ta thay bằng IdentityDbContext của thằng using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+    public class EShopDbContext : IdentityDbContext<AppUser,AppRole,Guid> // sau đó ta thay bằng IdentityDbContext của thằng using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
     {
         //trong IdentityDbContext có nhiều cái về User và UserROLE và Key nên ta thay và kế thừa thằng này
 
@@ -25,7 +25,7 @@ namespace eShopSolution.Data.EF
 
 
 
-        public EShopDBContext(DbContextOptions options) : base(options) // khi kế thừa nó có thể Generate ra thằng này
+        public EShopDbContext(DbContextOptions options) : base(options) // khi kế thừa nó có thể Generate ra thằng này
         {
 
         }
