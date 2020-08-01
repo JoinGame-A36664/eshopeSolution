@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using eShopeSolution.AddminApp.Models;
-using Microsoft.AspNetCore.Authorization;
+using eShopSolution.AdminApp.Controllers;
+using eShopeSolution.Utilities.Constants;
+using Microsoft.AspNetCore.Http;
 
 namespace eShopeSolution.AddminApp.Controllers
 {
@@ -33,6 +31,13 @@ namespace eShopeSolution.AddminApp.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+        [HttpPost]
+        public IActionResult Language(NavigationViewModel viewModel)
+        {
+            HttpContext.Session.SetString(SystemConstants.Appsettings.DefaultLanguageId, viewModel.CurrentLanguageId);
+            return RedirectToAction("Index");
         }
     }
 }

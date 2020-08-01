@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using eShopeSolution.Utilities.Constants;
 using eShopSolution.Application.Catalog.Products;
 using eShopSolution.Application.Common;
+using eShopSolution.Application.System.Languages;
 using eShopSolution.Application.System.Roles;
 using eShopSolution.Application.System.Users;
 using eShopSolution.Data.EF;
@@ -40,12 +41,12 @@ namespace eShopSolution.BackendApi
         {
             // CẤU HÌNH ĐỂ KẾT NỖI VỚI DATABSE :https://docs.microsoft.com/en-us/ef/core/miscellaneous/connection-strings
             // phải reference thằng Data và Application , utiliti và ViewModel vào nhe
-            services.AddDbContext<EShopDBContext>(options =>
+            services.AddDbContext<EShopDbContext>(options =>
             options.UseSqlServer(Configuration.GetConnectionString(SystemConstants.MainConnectionString))); // ta lấy bên Utilities trong thư mục Constants để có được tên của ConectionString để kết nối với databse
 
             // NHỚ PHẢI ADD CÁI NÀY VÀO CHO PHÀN ĐĂNG NHẬP NHE
             services.AddIdentity<AppUser, AppRole>()
-            .AddEntityFrameworkStores<EShopDBContext>()
+            .AddEntityFrameworkStores<EShopDbContext>()
             .AddDefaultTokenProviders();
 
             //  KHAI BÁO DI
@@ -57,6 +58,8 @@ namespace eShopSolution.BackendApi
             services.AddTransient<RoleManager<AppRole>, RoleManager<AppRole>>();
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<IRoleService, RoleService>();
+
+            services.AddTransient<ILanguageService, LanguageService>();
             // đây là Registor theo Di lẻ từng thằng 1
             //   services.AddTransient<IValidator<LoginRequest>, LoginRequestValidator>();// Khai báo cho Validator theo DI
             //   services.AddTransient<IValidator<RegisterRequest>, RegisterRequestValidator>();

@@ -6,6 +6,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using eShopeSolution.AddminApp.Services;
+using eShopeSolution.Utilities.Constants;
 using eShopSolution.ViewModels.System.Users;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -68,7 +69,9 @@ namespace eShopeSolution.AddminApp.Controllers
                 IsPersistent = false  // là khi đăng nhập rồi mà tắt chương trình nó vẫn đăng nhập khi chạy lại
             };
 
-            HttpContext.Session.SetString("Token", result.ResultObj);  //phải add thêm modul token vào trong startup của project AdminApp
+            HttpContext.Session.SetString(SystemConstants.Appsettings.DefaultLanguageId, _configuration[SystemConstants.Appsettings.DefaultLanguageId]); // nhớ phải thêm DefaultLanguageId vào trong appsetting của adminApp
+
+            HttpContext.Session.SetString(SystemConstants.Appsettings.Token, result.ResultObj);  //phải add thêm modul token vào trong startup của project AdminApp
 
             await HttpContext.SignInAsync(
                     CookieAuthenticationDefaults.AuthenticationScheme,

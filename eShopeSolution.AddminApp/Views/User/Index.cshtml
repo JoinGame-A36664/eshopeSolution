@@ -57,7 +57,7 @@
                     <div id="msgAlert" class="alert alert-success" role="alert">
                         @ViewBag.SuccessMsg
                     </div>
-                    // muốn show song nó ẩn đi thì ta phải dùng jquery
+                    // muốn show song nó ẩn đi thì ta phải dùng jquery  ,, đây là cái thông báo thành công khi thêm sửa xóa thành công và thêm quyền
                 }
             </div>
 
@@ -65,7 +65,6 @@
                 <table class="table table-bordered">
                     <thead>
                         <tr>
-
                             <th>
                                 Họ
                             </th>
@@ -109,7 +108,7 @@
                                     @Html.ActionLink("Sửa", "Edit", new { id = item.Id }) |   <!--bên hàm Edit Details và Delete ta cần chuyền vào id lấy từ request lên chỗ này cũng cần chuyền-->
                                     @Html.ActionLink("Xem", "Details", new { id = item.Id }) |
                                     @Html.ActionLink("Xóa", "Delete", new { id = item.Id })|
-                                    @Html.ActionLink("Gán Quyền", "RoleAssign",new { id=item.Id})  <!--để gán quyền ta phải thêm thằng nữa ở đây-->
+                                    @Html.ActionLink("Gán Quyền", "RoleAssign", new { id = item.Id })  <!--để gán quyền ta phải thêm thằng nữa ở đây-->
                                     <!-- thằng thứ nhất là text thằng thứ hai là action -->
                                 </td>
                             </tr>
