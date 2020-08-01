@@ -8,6 +8,16 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+<!--trang con dùng lại Scripts nhớ phải đúng tên nhe-->
+@section Scripts{
+    <script>
+        // vào trong tài liệu mà đọc về jquery nhe
+        setTimeout(function () {
+            $('#msgAlert').fadeOut('slow');
+        }, 2000);
+    </script>
+}
+
 <div class="container-fluid">
     <h1 class="mt-4">Danh sách người dùng</h1>
     <ol class="breadcrumb mb-4">
@@ -40,16 +50,27 @@
             </div>
         </div>
         <div class="card-body">
+            <div class="row">
+                @if (ViewBag.SuccessMsg != null)
+                {
+                    // có thể vào đây xem bootstrap pagination : https://getbootstrap.com/docs/4.0/components/alerts/
+                    <div id="msgAlert" class="alert alert-success" role="alert">
+                        @ViewBag.SuccessMsg
+                    </div>
+                    // muốn show song nó ẩn đi thì ta phải dùng jquery
+                }
+            </div>
+
             <div class="table-responsive">
                 <table class="table table-bordered">
                     <thead>
                         <tr>
 
                             <th>
-                                Tên
+                                Họ
                             </th>
                             <th>
-                                Họ
+                                Tên
                             </th>
                             <th>
                                 Số điện thoại
@@ -69,10 +90,10 @@
                             <tr>
 
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.FirstName)
+                                    @Html.DisplayFor(modelItem => item.LastName)
                                 </td>
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.LastName)
+                                    @Html.DisplayFor(modelItem => item.FirstName)
                                 </td>
                                 <td>
                                     @Html.DisplayFor(modelItem => item.PhoneNumber)
@@ -85,9 +106,11 @@
                                 </td>
                                 <td>
                                     <!--id ở đây là biến mặc định trong cái Routing của chúng ta , nhơ phải thêm id vào để nó biding suống ko thì thiếu nó chả chạy đau -->
-                                    @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |   <!--bên hàm Edit Details và Delete ta cần chuyền vào id lấy từ request lên chỗ này cũng cần chuyền-->
-                                    @Html.ActionLink("Details", "Details", new { id = item.Id }) |
-                                    @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+                                    @Html.ActionLink("Sửa", "Edit", new { id = item.Id }) |   <!--bên hàm Edit Details và Delete ta cần chuyền vào id lấy từ request lên chỗ này cũng cần chuyền-->
+                                    @Html.ActionLink("Xem", "Details", new { id = item.Id }) |
+                                    @Html.ActionLink("Xóa", "Delete", new { id = item.Id })|
+                                    @Html.ActionLink("Gán Quyền", "RoleAssign",new { id=item.Id})  <!--để gán quyền ta phải thêm thằng nữa ở đây-->
+                                    <!-- thằng thứ nhất là text thằng thứ hai là action -->
                                 </td>
                             </tr>
                         }

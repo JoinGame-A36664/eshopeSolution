@@ -31,10 +31,13 @@ namespace eShopSolution.BackendApi.Controllers
         public async Task<IActionResult> Authencate([FromBody] LoginRequest request)  // phải dùng FromBody cho Template
         {  //Authencate(xác thực )
             if (!ModelState.IsValid)
+            {
                 return BadRequest(ModelState);
+            }
+            // phương thức _userService có Authencate và Authencate khai báo kiểu dữ liệu ApiResult trong ApiResult có ResultObj nên Authencate có thê trả về ResultObj
             var resultToken = await _userService.Authencate(request);
 
-            if (string.IsNullOrEmpty(resultToken.ResultObj))
+            if (string.IsNullOrEmpty(resultToken.ResultObj))  //ResultObj nằm trong Authencate rồi trong ApiResult
             {
                 return BadRequest(resultToken);
             }
@@ -65,6 +68,21 @@ namespace eShopSolution.BackendApi.Controllers
                 return BadRequest(ModelState);
 
             var result = await _userService.Update(id, request);
+            if (!result.IsSuccessed)
+            {
+                return BadRequest(result);
+            }
+            return Ok(result);
+        }
+
+        //PUT: http://localhost/api/users/id
+        [HttpPut("{id}/roles")]
+        public async Task<IActionResult> RoleAssign(Guid id, [FromBody] RoleAssignRequest request)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var result = await _userService.RoleAssign(id, request);
             if (!result.IsSuccessed)
             {
                 return BadRequest(result);

@@ -6,6 +6,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using eShopeSolution.AddminApp.Services;
+using eShopSolution.ViewModels.Common;
 using eShopSolution.ViewModels.System.Users;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -24,10 +25,13 @@ namespace eShopeSolution.AddminApp.Controllers
 
         private readonly IConfiguration _configuration;
 
-        public UserController(IUserApiClient userApiClient, IConfiguration configuration)
+        private readonly IRoleApiClient _roleApiClient;
+
+        public UserController(IUserApiClient userApiClient, IConfiguration configuration, IRoleApiClient roleApiClient)
         {
             _userApiClient = userApiClient;
             _configuration = configuration;
+            _roleApiClient = roleApiClient;
         }
 
         //ĐÂY LÀ TÌM KIẾM VƠI KEYWORD BÊN Default đã thự hiện cộng key word nếu thấy để gữ lại đối tượng khi tìm thấy mà nó vẫn sử dụng được phân trang ,chỉ khi reset nó mới ko cộng keyword sang Default mà xem nhe
@@ -45,6 +49,12 @@ namespace eShopeSolution.AddminApp.Controllers
             var data = await _userApiClient.GetUsersPagings(request);
             // để giữ lại giá trị hiển thị tren ô tìm kiếm ta dùng viewBag chuyền về cho view
             ViewBag.keyword = keyword;// tự động view sẽ nhận được
+
+            if (TempData["result"] != null)
+            {
+                //bên này đã nhận được TempData đấy  //  ta sẽ show nó bên view
+                ViewBag.SuccessMsg = TempData["result"];
+            }
 
             return View(data.ResultObj);
         }
@@ -73,7 +83,11 @@ namespace eShopeSolution.AddminApp.Controllers
                 return View();
             var result = await _userApiClient.RegisterUser(request);
             if (result.IsSuccessed)
+            {
+                // khi thành công ta có thể tạo một TempData  đây là đầu đi và sẽ có đầu nhận dữ liệu này nhe bên View Của nó
+                TempData["result"] = "Thêm Thành Công"; //có key là result
                 return RedirectToAction("Index");  // nếu thành công thì chuyển tới phân trang là Index
+            }
 
             ModelState.AddModelError("", result.Message);// Message trên Api nó chuyền suống được
             return View(request);//nếu ko thành công ta chả về request để xem request
@@ -110,7 +124,11 @@ namespace eShopeSolution.AddminApp.Controllers
 
             var result = await _userApiClient.UpdateUser(request.Id, request);
             if (result.IsSuccessed)
+            {
+                // khi thành công ta có thể tạo một TempData  đây là đầu đi và sẽ có đầu nhận dữ liệu này nhe bên View Của nó
+                TempData["result"] = "Sửa Thành Công"; //có key là result
                 return RedirectToAction("Index");
+            }
 
             ModelState.AddModelError("", result.Message);  // đây là lỗi của Model này
             return View(request);
@@ -128,7 +146,7 @@ namespace eShopeSolution.AddminApp.Controllers
 
         // delete user
         [HttpGet]
-        public IActionResult Delete(Guid id)
+        public IActionResult Delete(Guid id)  // lấy id của đối tựng cần xóa về
         {
             return View(new UserDeleteRequest()
             {
@@ -141,12 +159,66 @@ namespace eShopeSolution.AddminApp.Controllers
         {
             if (!ModelState.IsValid)
                 return View();
-            var result = await _userApiClient.Delete(request.Id);
+            var result = await _userApiClient.Delete(request.Id);// với id lấy về trên kia trong request và thực hiện xóa
             if (result.IsSuccessed)
+            {
+                // khi thành công ta có thể tạo một TempData  đây là đầu đi và sẽ có đầu nhận dữ liệu này nhe bên View Của nó
+                TempData["result"] = "Xóa Thành Công"; //có key là result
                 return RedirectToAction("Index");  // nếu thành công thì chuyển tới phân trang là Index
+            }
 
             ModelState.AddModelError("", result.Message);// Message trên Api nó chuyền suống được
             return View(request);//nếu ko thành công ta chả về request để xem request
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> RoleAssign(Guid id) // chuyền id từ index về đây nhờ phương thức HttpGet
+        {
+            // add view có VIew name là RoleAssign Template là Edit và Model clas RoleAssignRequest à layout dùng chung
+
+            var roleAssignRequest = await GetRoleAssignRequest(id);
+
+            return View(roleAssignRequest);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> RoleAssign(RoleAssignRequest request)
+        {
+            if (!ModelState.IsValid)
+                return View();
+
+            var result = await _userApiClient.RoleAssign(request.Id, request);
+            if (result.IsSuccessed)
+            {
+                TempData["result"] = "Thêm Quyền Thành Công"; //có key là result
+                return RedirectToAction("Index");
+            }
+
+            ModelState.AddModelError("", result.Message);  // đây là lỗi của Model này
+
+            var roleAssignRequest = await GetRoleAssignRequest(request.Id); // nếu trong trường hợp bị false nó vẫn lấy được về
+            return View(roleAssignRequest);
+        }
+
+        private async Task<RoleAssignRequest> GetRoleAssignRequest(Guid id)
+        {
+            var userObj = await _userApiClient.GetById(id);
+
+            // chúng ta phải lấy ra được danh sách role
+            var roleObj = await _roleApiClient.GetAll();  // trả về một danh sách ApiResult<List<RoleVm>> ,ta đưa vào list<RoleVm> nên thằng ResultObj sẽ là list<RoleVm>
+
+            var roleAssignRequest = new RoleAssignRequest();
+            foreach (var role in roleObj.ResultObj)  // ResultObj nằm trong ApiResult
+            {
+                roleAssignRequest.Roles.Add(new SelectItem()
+                {
+                    Id = role.Id.ToString(),
+                    Name = role.Name,
+                    Selected = userObj.ResultObj.Roles.Contains(role.Name) // Contains xem nó có chứa Name của role không,nếu có nó sẽ là true không là false
+                });
+            }
+
+            return roleAssignRequest;
         }
     }
 }

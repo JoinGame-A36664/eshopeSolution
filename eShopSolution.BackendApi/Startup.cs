@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using eShopeSolution.Utilities.Constants;
 using eShopSolution.Application.Catalog.Products;
 using eShopSolution.Application.Common;
+using eShopSolution.Application.System.Roles;
 using eShopSolution.Application.System.Users;
 using eShopSolution.Data.EF;
 using eShopSolution.Data.Entities;
@@ -55,7 +56,7 @@ namespace eShopSolution.BackendApi
             services.AddTransient<SignInManager<AppUser>, SignInManager<AppUser>>();
             services.AddTransient<RoleManager<AppRole>, RoleManager<AppRole>>();
             services.AddTransient<IUserService, UserService>();
-
+            services.AddTransient<IRoleService, RoleService>();
             // đây là Registor theo Di lẻ từng thằng 1
             //   services.AddTransient<IValidator<LoginRequest>, LoginRequestValidator>();// Khai báo cho Validator theo DI
             //   services.AddTransient<IValidator<RegisterRequest>, RegisterRequestValidator>();
