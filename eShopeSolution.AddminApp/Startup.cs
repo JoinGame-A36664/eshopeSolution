@@ -61,6 +61,9 @@ namespace eShopeSolution.AddminApp
             // tiêm Di cho Language
             services.AddTransient<ILanguageApiClient, LanguageApiClient>();
 
+            //tiêm Di cho product
+            services.AddTransient<IProductApiClient, ProductApiClient>();
+
             // < !--add thêm nuget Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation vào để chạy cùng chương trình-- >
             IMvcBuilder builder = services.AddRazorPages();
             var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");

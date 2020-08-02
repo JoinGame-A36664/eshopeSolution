@@ -22,28 +22,16 @@ namespace eShopSolution.BackendApi.Controllers
 
         private readonly IProductService _ProductService;
 
-        public ProductsController(IProductService publicProductService, IProductService ProductService)  // bắt đầu dử dụng cá phương thức mà ta định nghĩa cho sản phẩm
+        public ProductsController(IProductService productService)
         {
-            _ProductService = publicProductService;  // muốn tiêm vào nhó khai báo DI bên service nhe
-            _ProductService = ProductService;
+            _ProductService = productService;
         }
 
-        // CÁC PHƯƠNG THỨC CẢU PUBLIC
-
-        // http://localhost:port/product
-        //[HttpGet("{languageId}")]
-        //public async Task<IActionResult> GetAll(string languageId)
-        //{
-        //    var Products = await _publicProductService.GetAll(languageId);
-        //    return Ok(Products);
-        //}
-
-        // http://localhost:port/products?pageIndex=1 &&pageSize=10&&CategoryId=
-        [HttpGet("{languageId}")] // đặt alias(bí danh) cho nó để không trùng với thằng ở trên chỉ dành cho HttpGet
-        public async Task<IActionResult> GetAllPaging(string languageId, [FromQuery] GetPublicProductPagingRequest request) // tất cả tham số đều lấy từ query ra khi ta để FromQuery
+        [HttpGet("paging")]
+        public async Task<IActionResult> GetAllPaging([FromQuery] GetManageProductPagingRequest request)
         {
-            var Products = await _ProductService.GetAllByCategoryId(languageId, request); // thằng request này có languageId rồi nhe
-            return Ok(Products);
+            var products = await _ProductService.GetAllPaging(request);
+            return Ok(products);
         }
 
         // CÁC PHƯƠNG THỨC CỦA MANAGE
@@ -56,7 +44,7 @@ namespace eShopSolution.BackendApi.Controllers
         {
             var Product = await _ProductService.GetById(productId, languageId);
             if (Product == null)
-                return BadRequest("Cannot dìn Product");
+                return BadRequest("Cannot find Product");
             return Ok(Product);
         }
 

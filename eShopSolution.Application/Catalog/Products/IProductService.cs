@@ -24,9 +24,9 @@ namespace eShopSolution.Application.Catalog.Products
 
         Task<int> Delete(int ProductId);// chỉ cần chuyền vào ProductId
 
-        Task<ProductViewModel> GetById(int productId, string languageId);
+        Task<ProductVm> GetById(int productId, string languageId);
 
-        Task<PagedResult<ProductViewModel>> GetAllPaging(GetMangeProductRequest request);
+        Task<PagedResult<ProductVm>> GetAllPaging(GetManageProductPagingRequest request);
 
         // phương thức thêm ảnh vào database
         Task<int> AddImage(int ProductId, ProductImageCreateRequest request);
@@ -39,6 +39,6 @@ namespace eShopSolution.Application.Catalog.Products
 
         Task<List<ProductImageViewModel>> GetListImages(int productId);
 
-        Task<PagedResult<ProductViewModel>> GetAllByCategoryId(string languageId, GetPublicProductPagingRequest request); // hiển thị danh sách sản phẩm theo categoryId (thể loại )
+        Task<PagedResult<ProductVm>> GetAllByCategoryId(string languageId, GetPublicProductPagingRequest request); // hiển thị danh sách sản phẩm theo categoryId (thể loại )
     }
 }

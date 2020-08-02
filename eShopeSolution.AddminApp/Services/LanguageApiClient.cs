@@ -24,7 +24,7 @@ namespace eShopeSolution.AddminApp.Services
 
         public async Task<ApiResult<List<LanguageVm>>> GetAll()
         {
-            return await GetAsync<ApiResult<List<LanguageVm>>>("/api/languages");
+            return await GetAsync<ApiResult<List<LanguageVm>>>("/api/languages");  // theo kiểu đường dẫn cửa swagger ý
         }
     }
 }
