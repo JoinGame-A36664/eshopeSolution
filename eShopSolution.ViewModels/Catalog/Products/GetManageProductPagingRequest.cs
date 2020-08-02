@@ -5,11 +5,12 @@ using System.Text;
 
 namespace eShopSolution.ViewModels.Catalog.Products
 {
-    public  class GetMangeProductRequest:PagingRequestBase
+    public class GetManageProductPagingRequest : PagingRequestBase
     {
         public string KeyWord { get; set; }
 
         public List<int> CategoryIds { get; set; }
 
+        public string LanguageId { get; set; }
     }
 }

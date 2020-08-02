@@ -117,20 +117,19 @@ namespace eShopSolution.Application.Catalog.Products
         }
 
         // phân trang
-        public async Task<PagedResult<ProductViewModel>> GetAllPaging(GetMangeProductRequest request)
+        public async Task<PagedResult<ProductVm>> GetAllPaging(GetManageProductPagingRequest request)
         {
-            // bước 1 :select join
+            // bước 1 :select join  ,, nhớ nhe giữ liệu có đủ mới cho query chỗ này
             var query = from p in _context.Products
-                        join pt in _context.ProductTranslations
-                        on p.Id equals pt.ProductId
+                        join pt in _context.ProductTranslations on p.Id equals pt.ProductId
                         join pic in _context.ProductInCategories on p.Id equals pic.ProductId
                         join c in _context.Categories on pic.CategoryId equals c.Id
-                        where pt.Name.Contains(request.KeyWord)
+                        where pt.LanguageId == request.LanguageId
                         select new { p, pt, pic };
             // bước 3: filter theo điều kiện
             if (!string.IsNullOrEmpty(request.KeyWord))
                 query = query.Where(x => x.pt.Name.Contains(request.KeyWord));
-            if (request.CategoryIds.Count > 0)// có nghĩa là có tất cả các tìm kiếm nào
+            if (request.CategoryIds != null && request.CategoryIds.Count > 0)// có nghĩa là có tất cả các tìm kiếm nào
             {
                 query = query.Where(p => request.CategoryIds.Contains(p.pic.CategoryId));//một trong só nhữ thằng này thì mới được
             }
@@ -138,7 +137,7 @@ namespace eShopSolution.Application.Catalog.Products
             int totalRow = await query.CountAsync(); // lấy ra tông số số dòng để phân trang
             var data = await query.Skip((request.PageIndex - 1) * request.PageSize)
                 .Take(request.PageSize)// nếu PageIndex=2 và PageSize=20 thì bỏ qua 10 chỉ lấy 10 bẩn ghi hiện lên ko lấy tất để phù hợp với PageSize
-                .Select(x => new ProductViewModel()
+                .Select(x => new ProductVm()
                 {
                     Id = x.p.Id,
                     Name = x.pt.Name,
@@ -155,7 +154,7 @@ namespace eShopSolution.Application.Catalog.Products
                     ViewCount = x.p.ViewCount
                 }).ToListAsync(); // vì ta Async ở đây nên trên kia ta chỉ cần await để đẩy vào data là song  nhớ là ToListAsync nha vì bên PageRsult Item ta để là list
                                   // bước 4: selecet and Project
-            var pagedResult = new PagedResult<ProductViewModel>()
+            var pagedResult = new PagedResult<ProductVm>()
             {
                 TotalRecords = totalRow,
                 PageSize = request.PageSize,
@@ -165,14 +164,14 @@ namespace eShopSolution.Application.Catalog.Products
             return pagedResult;
         }
 
-        public async Task<ProductViewModel> GetById(int productId, string languageId)
+        public async Task<ProductVm> GetById(int productId, string languageId)
         {
             var Product = await _context.Products.FindAsync(productId);
 
             // lấy ra thằng đầu tiên thỏa mãn
             var productTranslation = await _context.ProductTranslations.FirstOrDefaultAsync(x => x.ProductId == productId && x.LanguageId == languageId);
 
-            var ProductViewModel = new ProductViewModel()
+            var ProductViewModel = new ProductVm()
             {
                 Id = Product.Id,
                 Price = Product.Price,
@@ -337,7 +336,7 @@ namespace eShopSolution.Application.Catalog.Products
             return fileName;
         }
 
-        public async Task<PagedResult<ProductViewModel>> GetAllByCategoryId(string languageId, GetPublicProductPagingRequest request) // lấy của public nhe
+        public async Task<PagedResult<ProductVm>> GetAllByCategoryId(string languageId, GetPublicProductPagingRequest request) // lấy của public nhe
         {
             // bước 1 :select join
             var query = from p in _context.Products
@@ -358,7 +357,7 @@ namespace eShopSolution.Application.Catalog.Products
             int totalRow = await query.CountAsync(); // lấy ra tông số số dòng để phân trang   phải include using Microsoft.EntityFrameworkCore;
             var data = await query.Skip((request.PageIndex - 1) * request.PageSize)
                 .Take(request.PageSize)// nếu PageIndex=2 và PageSize=20 thì bỏ qua 10 chỉ lấy 10 bẩn ghi hiện lên ko lấy tất để phù hợp với PageSize
-                .Select(x => new ProductViewModel()
+                .Select(x => new ProductVm()
                 {
                     Id = x.p.Id,
                     Name = x.pt.Name,
@@ -375,7 +374,7 @@ namespace eShopSolution.Application.Catalog.Products
                     ViewCount = x.p.ViewCount
                 }).ToListAsync(); // vì ta Async ở đây nên trên kia ta chỉ cần await để đẩy vào data là song  nhớ là ToListAsync nha vì bên PageRsult Item ta để là list
                                   // bước 4: selecet and Project
-            var pagedResult = new PagedResult<ProductViewModel>()
+            var pagedResult = new PagedResult<ProductVm>()
             {
                 TotalRecords = totalRow,
                 PageSize = request.PageSize,

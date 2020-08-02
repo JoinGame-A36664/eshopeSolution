@@ -60,6 +60,7 @@ namespace eShopSolution.BackendApi
             services.AddTransient<IRoleService, RoleService>();
 
             services.AddTransient<ILanguageService, LanguageService>();
+
             // đây là Registor theo Di lẻ từng thằng 1
             //   services.AddTransient<IValidator<LoginRequest>, LoginRequestValidator>();// Khai báo cho Validator theo DI
             //   services.AddTransient<IValidator<RegisterRequest>, RegisterRequestValidator>();
