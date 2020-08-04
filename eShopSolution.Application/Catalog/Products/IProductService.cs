@@ -26,7 +26,7 @@ namespace eShopSolution.Application.Catalog.Products
 
         Task<ProductVm> GetById(int productId, string languageId);
 
-        Task<PagedResult<ProductVm>> GetAllPaging(GetManageProductPagingRequest request);
+        Task<ApiResult<PagedResult<ProductVm>>> GetAllPaging(GetManageProductPagingRequest request);
 
         // phương thức thêm ảnh vào database
         Task<int> AddImage(int ProductId, ProductImageCreateRequest request);

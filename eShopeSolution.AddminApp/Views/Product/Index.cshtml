@@ -1,6 +1,7 @@
 ﻿@using eShopSolution.ViewModels.Common;
-@model PagedResult<eShopSolution.ViewModels.Catalog.Products.ProductVm>
+@using eShopSolution.ViewModels.Catalog.Products;
 
+@model PagedResult<ProductVm>
 @{ ViewData["Title"] = "Danh sách sản phẩm";
     Layout = "~/Views/Shared/_Layout.cshtml"; }
 @section Scripts{
@@ -42,9 +43,9 @@
             <div class="row">
                 @if (ViewBag.SuccessMsg != null)
                 {
-    <div id="msgAlert" class="alert alert-success" role="alert">
-        @ViewBag.SuccessMsg
-    </div>}
+                    <div id="msgAlert" class="alert alert-success" role="alert">
+                        @ViewBag.SuccessMsg
+                    </div>}
             </div>
             <div class="table-responsive">
                 <table class="table table-bordered">
@@ -72,30 +73,30 @@
                     <tbody>
                         @foreach (var item in Model.Items)
                         {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Id)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.OriginalPrice)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Price)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Stock)
-                </td>
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Id)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Name)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.OriginalPrice)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Price)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Stock)
+                                </td>
 
-                <td>
-                    @Html.ActionLink("Sửa", "Edit", new { id = item.Id }) |
-                    @Html.ActionLink("Xem", "Details", new { id = item.Id }) |
-                    @Html.ActionLink("Xóa", "Delete", new { id = item.Id }) |
-                </td>
-            </tr>
-}
+                                <td>
+                                    @Html.ActionLink("Sửa", "Edit", new { productId = item.Id, languageId = item.LanguageId }) |
+                                    @Html.ActionLink("Xem", "Details", new { id = item.Id }) |
+                                    @Html.ActionLink("Xóa", "Delete", new { id = item.Id }) |
+                                </td>
+                            </tr>
+                        }
                     </tbody>
                 </table>
             </div>

@@ -94,7 +94,7 @@ namespace eShopeSolution.AddminApp.Controllers
             return View(request);//nếu ko thành công ta chả về request để xem request
         }
 
-        [HttpGet]
+        [HttpGet] // lấy cho người dùng xem
         public async Task<IActionResult> Edit(Guid id)// lấy ra Id nhớ Index cũng phải có Id nhe
         {
             //add view : ViewName=Edit Template=Edit ModelClass= UserUpdate  chọn layout chung

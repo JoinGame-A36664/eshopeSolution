@@ -117,22 +117,22 @@ namespace eShopSolution.Application.Catalog.Products
         }
 
         // phân trang
-        public async Task<PagedResult<ProductVm>> GetAllPaging(GetManageProductPagingRequest request)
+        public async Task<ApiResult<PagedResult<ProductVm>>> GetAllPaging(GetManageProductPagingRequest request)
         {
             // bước 1 :select join  ,, nhớ nhe giữ liệu có đủ mới cho query chỗ này
             var query = from p in _context.Products
                         join pt in _context.ProductTranslations on p.Id equals pt.ProductId
-                        join pic in _context.ProductInCategories on p.Id equals pic.ProductId
-                        join c in _context.Categories on pic.CategoryId equals c.Id
+                        //join pic in _context.ProductInCategories on p.Id equals pic.ProductId
+                        //join c in _context.Categories on pic.CategoryId equals c.Id
                         where pt.LanguageId == request.LanguageId
-                        select new { p, pt, pic };
+                        select new { p, pt };
             // bước 3: filter theo điều kiện
             if (!string.IsNullOrEmpty(request.KeyWord))
                 query = query.Where(x => x.pt.Name.Contains(request.KeyWord));
-            if (request.CategoryIds != null && request.CategoryIds.Count > 0)// có nghĩa là có tất cả các tìm kiếm nào
-            {
-                query = query.Where(p => request.CategoryIds.Contains(p.pic.CategoryId));//một trong só nhữ thằng này thì mới được
-            }
+            //if (request.CategoryIds != null && request.CategoryIds.Count > 0)// có nghĩa là có tất cả các tìm kiếm nào
+            //{
+            //    query = query.Where(p => request.CategoryIds.Contains(p.pic.CategoryId));//một trong só nhữ thằng này thì mới được
+            //}
             // bước 3: paging
             int totalRow = await query.CountAsync(); // lấy ra tông số số dòng để phân trang
             var data = await query.Skip((request.PageIndex - 1) * request.PageSize)
@@ -161,45 +161,55 @@ namespace eShopSolution.Application.Catalog.Products
                 PageIndex = request.PageIndex,
                 Items = data
             };
-            return pagedResult;
+
+            if (pagedResult != null)
+            {
+                return new ApiSuccessResult<PagedResult<ProductVm>>(pagedResult);
+            }
+
+            return new ApiErrorResult<PagedResult<ProductVm>>();
         }
 
         public async Task<ProductVm> GetById(int productId, string languageId)
         {
-            var Product = await _context.Products.FindAsync(productId);
+            var product = await _context.Products.FindAsync(productId);
+            // lấy ra thằng đầu tiên thảo mãn
+            var productTranslation = await _context.ProductTranslations.FirstOrDefaultAsync(x => x.ProductId == productId
+            && x.LanguageId == languageId);
 
-            // lấy ra thằng đầu tiên thỏa mãn
-            var productTranslation = await _context.ProductTranslations.FirstOrDefaultAsync(x => x.ProductId == productId && x.LanguageId == languageId);
-
-            var ProductViewModel = new ProductVm()
+            var productViewModel = new ProductVm()
             {
-                Id = Product.Id,
-                Price = Product.Price,
-                Stock = Product.Stock,
-                ViewCount = Product.ViewCount,
-                DateCreated = Product.DateCreated,
+                Id = product.Id,
+                DateCreated = product.DateCreated,
                 Description = productTranslation != null ? productTranslation.Description : null,
                 LanguageId = productTranslation.LanguageId,
                 Details = productTranslation != null ? productTranslation.Details : null,
                 Name = productTranslation != null ? productTranslation.Name : null,
-                OriginalPrice = Product.OriginalPrice,
+                OriginalPrice = product.OriginalPrice,
+                Price = product.Price,
                 SeoAlias = productTranslation != null ? productTranslation.SeoAlias : null,
                 SeoDescription = productTranslation != null ? productTranslation.SeoDescription : null,
                 SeoTitle = productTranslation != null ? productTranslation.SeoTitle : null,
+                Stock = product.Stock,
+                ViewCount = product.ViewCount
             };
-
-            return ProductViewModel;
+            return productViewModel;
         }
 
         // bắt đầu Update vào  bảng ProductTransalation còn Product chỉ để query thôi
         public async Task<int> Update(ProductUpdateRequest request)
         {
+            // đầu tiên tìm product theo id
             var product = await _context.Products.FindAsync(request.Id);
 
             var productTranslation = await _context.ProductTranslations.FirstOrDefaultAsync(
                 x => x.ProductId == request.Id &&
-                x.LanguageId == request.LanguageId);// chúng ta chỉ sửa cho đúng 1 loại ngông ngữ
-            if (product == null || productTranslation == null) throw new EShopeException($"Cannot find a Product with id :{request.Id}");
+                x.LanguageId == request.LanguageId);// lấy thông tin sản phẩm theo id và ngôn ngữ
+
+            if (product == null || productTranslation == null)
+            {
+                throw new EShopeException($"Cannot find a Product with id :{request.Id}");
+            }
 
             productTranslation.Name = request.Name;
             productTranslation.SeoAlias = request.SeoAlias;
@@ -209,7 +219,7 @@ namespace eShopSolution.Application.Catalog.Products
             productTranslation.Details = request.Details;
 
             // update ảnh cho sản phẩm
-            if (request.ThumbnailImage != null)
+            if (request.ThumbnailImage != null) // ThumbnailImage ở trong ProductUpdateRequest cũng được lấy theo request
             {
                 // nhớ _context là đại diện cho database nên có thể where truy vấn như bình thường nhe
                 var thumbnailImage = await _context.ProductImages.FirstOrDefaultAsync(x => x.Isdefault == true && x.ProductId == request.Id); // tìm kiếm xem có thằng nào phù hợp không để update thay thế nó
@@ -223,8 +233,7 @@ namespace eShopSolution.Application.Catalog.Products
                 }
             }
 
-            return await _context.SaveChangesAsync(); // nó sẽ trả về kiểu int nếu >0 là thành công
-            // chả về một bản ghi
+            return await _context.SaveChangesAsync();
         }
 
         // bắt đầu update Price
@@ -343,6 +352,7 @@ namespace eShopSolution.Application.Catalog.Products
                         join pt in _context.ProductTranslations
                         on p.Id equals pt.ProductId
                         join pic in _context.ProductInCategories on p.Id equals pic.ProductId
+
                         join c in _context.Categories on pic.CategoryId equals c.Id
                         where pt.LanguageId == languageId
                         select new { p, pt, pic };
@@ -350,7 +360,7 @@ namespace eShopSolution.Application.Catalog.Products
 
             if (request.CategoryId.HasValue && request.CategoryId.Value > 0)// HasValue mặc đinh là true
             {
-                // using System.linq
+                //using System.linq
                 query = query.Where(p => p.pic.CategoryId == request.CategoryId);//một trong só nhữ thằng này thì mới được
             }
             // bước 3: paging

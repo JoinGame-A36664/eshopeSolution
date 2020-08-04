@@ -39,26 +39,24 @@ namespace eShopeSolution.AddminApp
                     options.AccessDeniedPath = "/Account/Forbidden";  // AccessDeniedPath(từ chối chuy cập) thì về trang theo đường dẫn này /Account/Forbidden
                 });
 
+            // add valiator cho tất cả poject
             services.AddControllersWithViews() // add them nuget FluentValidation
                 .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<LoginRequestValidator>()); // chúng ta cũng muốn dùng chung các valigator các hạn chế cho request bên này nên cũng cho thằng này vào nó sẽ valigator tất cả project
 
             // add thêm Token để ửu dụng cho UsersController bên Api phải add nó sau AddControllersWithViews và ở dưới phải thêm app.UseSession() sau thằng Authorization()
-            // ta phỉ add nuget Microsoft.AspNetCore.Session vào AdminAp
+            // ta phải add nuget Microsoft.AspNetCore.Session vào AdminAp
             services.AddSession(options =>
             {
+                // set thời gian thoát của Session
                 options.IdleTimeout = TimeSpan.FromMinutes(30);  // lưu Session trong 30 phút sau đó tự động remove
             });
 
             // add thằng này cho UserApiClient ở phương thức GetById   nó cũng như Di
-            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();  // là để lấy ra sessions bên BaseApiClient mà xem lấy
 
-            // tiêm Di bên UserApiClient vào
+            // tiêm Di tro user  sử dụng trong UserController
             services.AddTransient<IUserApiClient, UserApiClient>();
-
-            // tiêm Di cho role
             services.AddTransient<IRoleApiClient, RoleApiClient>();
-
-            // tiêm Di cho Language
             services.AddTransient<ILanguageApiClient, LanguageApiClient>();
 
             //tiêm Di cho product
@@ -100,7 +98,7 @@ namespace eShopeSolution.AddminApp
             app.UseAuthorization();// sử dụng ủy quyền
 
             // add thằng này phải để ở dưới UseAuthorization
-            app.UseSession();
+            app.UseSession();  // phải seur dụng nó mới có Session sử dụng được
 
             app.UseEndpoints(endpoints =>  // sử dụng điểm cuối để trả lên
             {
