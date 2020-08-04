@@ -53,18 +53,20 @@ namespace eShopSolution.Application.System.Users
             };
 
             // bắt đầu mã hóa Claim bằng Symmetric vào appseting của Api cài đặt
-
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Tokens:Key"]));
+            //bắt đầu mã hóa token
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Tokens:Key"])); // lấy từ cấu hình appseting theo Tokens và "Key": "0123456789ABCDEF",
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-            var token = new JwtSecurityToken(_config["Tokens:Issuer"],
+            var token = new JwtSecurityToken(_config["Tokens:Issuer"],  // "Issuer": "https://thanglong.edu.vn/"
                 _config["Tokens:Issuer"],
                 claims,
-                expires: DateTime.Now.AddHours(3),
-                signingCredentials: creds);
+                expires: DateTime.Now.AddHours(3), // token hết hạn sau 3 tiếng
+                signingCredentials: creds); // ký thông tin xác thực
+
+            // vậy là sau khi đăng nhập ta có 1 token được mã hóa , nội dụng token có : thông tin ( FirstName,Email,UserName,role) và key,Issuer
 
             //ApiSuccessResult là con của ApiResult nên có thể trả về con nó
-            return new ApiSuccessResult<string>(new JwtSecurityTokenHandler().WriteToken(token));
+            return new ApiSuccessResult<string>(new JwtSecurityTokenHandler().WriteToken(token));  // rồi chả về một chuỗi token
         }
 
         //  DELETE user
@@ -73,7 +75,7 @@ namespace eShopSolution.Application.System.Users
             var user = await _userManager.FindByIdAsync(Id.ToString());
             if (user == null)
             {
-                return new ApiErrorResult<bool>("User không tồn tại");
+                return new ApiErrorResult<bool>("Tài khoản không tồn tại");
             }
             var result = await _userManager.DeleteAsync(user);
             if (result.Succeeded)

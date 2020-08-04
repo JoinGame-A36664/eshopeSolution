@@ -42,7 +42,7 @@ namespace eShopSolution.BackendApi.Controllers
                 return BadRequest(resultToken);
             }
 
-            return Ok(resultToken);
+            return Ok(resultToken); // TRẢ ra resultToken nó sẽ post lên  [HttpPost("authenticate")]  đường đúng là http://localhost/api/users/authenticate
         }
 
         [HttpPost]
@@ -75,7 +75,7 @@ namespace eShopSolution.BackendApi.Controllers
             return Ok(result);
         }
 
-        //PUT: http://localhost/api/users/id
+        //PUT: http://localhost/api/users/id/roles
         [HttpPut("{id}/roles")]
         public async Task<IActionResult> RoleAssign(Guid id, [FromBody] RoleAssignRequest request)
         {

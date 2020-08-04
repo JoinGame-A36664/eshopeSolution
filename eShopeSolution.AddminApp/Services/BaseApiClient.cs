@@ -30,13 +30,17 @@ namespace eShopSolution.AdminApp.Services
             // lấy ra chuỗi token
             var sessions = _httpContextAccessor
                 .HttpContext
-                .Session
+                .Session // Session được cài đạt trong startup
                 .GetString(SystemConstants.Appsettings.Token);
 
+            // tạo ra một client
             var client = _httpClientFactory.CreateClient();
+            // có địa chỉ giống địa chỉ cấu hình local host bên appsetting
             client.BaseAddress = new Uri(_configuration[SystemConstants.Appsettings.BaseAddress]);
+            //ủy quyền token giống đăng nhập Swagger để mở khóa
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", sessions);  // điền token vào đây để xác thực (giông mật khâu)
-            var response = await client.GetAsync(url); // lấy ra keert quả từ url
+            // với client lấy response trên url
+            var response = await client.GetAsync(url);
             var body = await response.Content.ReadAsStringAsync(); // đọc nội dung chuỗi lấy từ response về
             if (response.IsSuccessStatusCode)
             {

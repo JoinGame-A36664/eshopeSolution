@@ -9,6 +9,11 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
+///1. HTTP GET:Để yêu cầu lấy tài nguyên tại URI đó.
+///2. HTTP DELETE: Để yêu cầu xóa tài nguyên tại URI đó
+///3. HTTP POST: Để yêu cầu tải lên và lưu dữ liệu đang được tải lên dữ liệu. Sau đó, máy chủ lưu trữ thực thể và cung cấp URI mới cho tài nguyên đó.
+//4. HTTP PUT: Tương tự POST nhưng với điều kiện nó kiểm tra xem tài nguyên đó đã được lưu chưa. Nếu tài nguyên đó có sẵn thì nó chỉ cần cập nhật.
+
 // tải nuget :Swashbuckle.AspNetCore
 
 namespace eShopSolution.BackendApi.Controllers
@@ -49,9 +54,12 @@ namespace eShopSolution.BackendApi.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromForm] ProductCreateRequest request) // tất cả các thuộc tính phải using form data
+        [Consumes("multipart/form-data")]// nó cho ta nhận 1 kiểu chuyền lên là form data
+        public async Task<IActionResult> Create([FromForm] ProductCreateRequest request) // request đã được add dữ liệu mới bên ProductApiClient nhe
         {
-            if (!ModelState.IsValid)
+            // nhận dữ liệu từ frontend theo đường dẫn $"/api/products" và theo form như trên
+
+            if (!ModelState.IsValid)  // ModelState chính là chứa dữ liệu của đường dẫn $"/api/products"
             {
                 return BadRequest(ModelState);
             }
@@ -69,11 +77,16 @@ namespace eShopSolution.BackendApi.Controllers
         }
 
         [HttpPut] // update tất cả phần
+        [Consumes("multipart/form-data")]
         public async Task<IActionResult> Update([FromForm] ProductUpdateRequest request) // tất cả các thuộc tính phải using form data
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
             var affectedResult = await _ProductService.Update(request); // thằng này chả về id nhe
             if (affectedResult == 0)
-                return BadRequest("Cannot find Id");// đây là nỗi 400
+                return BadRequest();// đây là nỗi 400
 
             return Ok();
         }
