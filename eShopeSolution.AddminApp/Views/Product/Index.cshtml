@@ -55,6 +55,9 @@
                                 Mã SP
                             </th>
                             <th>
+                                Mã Ngôn ngữ
+                            </th>
+                            <th>
                                 Tên
                             </th>
                             <th>
@@ -74,8 +77,12 @@
                         @foreach (var item in Model.Items)
                         {
                             <tr>
+
                                 <td>
                                     @Html.DisplayFor(modelItem => item.Id)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.LanguageId)
                                 </td>
                                 <td>
                                     @Html.DisplayFor(modelItem => item.Name)
@@ -91,8 +98,8 @@
                                 </td>
 
                                 <td>
-                                    @Html.ActionLink("Sửa", "Edit", new { productId = item.Id, languageId = item.LanguageId }) |
-                                    @Html.ActionLink("Xem", "Details", new { id = item.Id }) |
+                                    @Html.ActionLink("Sửa", "Edit", new { id = item.Id, LanguageId = item.LanguageId }) |
+                                    @Html.ActionLink("Xem", "Details", new { id = item.Id, LanguageId = item.LanguageId }) |
                                     @Html.ActionLink("Xóa", "Delete", new { id = item.Id }) |
                                 </td>
                             </tr>

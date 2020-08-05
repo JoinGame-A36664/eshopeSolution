@@ -16,5 +16,7 @@ namespace eShopeSolution.AddminApp.Services
         Task<int> UpdateProduct(ProductUpdateRequest request); // update dữ liệu
 
         Task<ProductVm> GetById(int productId, string languageId);
+
+        Task<bool> Delete(int Id);
     }
 }
