@@ -92,16 +92,19 @@ namespace eShopeSolution.AddminApp.Services
         public async Task<int> UpdateProduct(ProductUpdateRequest request)
         {
             var client = _httpClientFactory.CreateClient();
-            client.BaseAddress = new Uri(_configuration["BaseAddress"]);
+            client.BaseAddress = new Uri(_configuration[SystemConstants.Appsettings.BaseAddress]);
             var sessions = _httpContextAccessor.HttpContext.Session.GetString("Token");
 
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", sessions);
 
+            //  var json = JsonConvert.SerializeObject(request);
+
             var json = JsonConvert.SerializeObject(request);
+
             var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
 
             // đây chính là đường dẫn kết nối với role của tầng Backend và lấy về response mang về đây sử lý tiếp
-            var response = await client.PutAsync($"/api/poducts", httpContent);
+            var response = await client.PutAsync($"/api/products", httpContent);
             var result = await response.Content.ReadAsStringAsync();
             if (response.IsSuccessStatusCode)
                 return JsonConvert.DeserializeObject<int>(result);
@@ -109,7 +112,7 @@ namespace eShopeSolution.AddminApp.Services
             return JsonConvert.DeserializeObject<int>(result);
         }
 
-        public async Task<ProductVm> GetById(int productId, string languageId)
+        public async Task<ProductVm> GetById(int id, string LanguageId)
         {
             var sessions = _httpContextAccessor
                   .HttpContext
@@ -119,7 +122,7 @@ namespace eShopeSolution.AddminApp.Services
             var client = _httpClientFactory.CreateClient();
             client.BaseAddress = new Uri(_configuration[SystemConstants.Appsettings.BaseAddress]);
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", sessions);
-            var response = await client.GetAsync($"/api/products/{productId}/{languageId}"); // đúng đương dẫn đấy
+            var response = await client.GetAsync($"/api/products/{id}/{LanguageId}"); // đúng đương dẫn đấy
             var body = await response.Content.ReadAsStringAsync(); // đọc nội dung chuỗi lấy từ response về
             if (response.IsSuccessStatusCode)
             {
@@ -130,6 +133,20 @@ namespace eShopeSolution.AddminApp.Services
                 return myDeserializedObjList;
             }
             return JsonConvert.DeserializeObject<ProductVm>(body); // trả về một sản phẩm
+        }
+
+        public async Task<bool> Delete(int Id)
+        {
+            var sessions = _httpContextAccessor.HttpContext.Session.GetString("Token");
+            var client = _httpClientFactory.CreateClient();
+            client.BaseAddress = new Uri(_configuration["BaseAddress"]);
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", sessions);   // Phải add
+            var response = await client.DeleteAsync($"/api/products/{Id}");
+            var body = await response.Content.ReadAsStringAsync();
+            if (response.IsSuccessStatusCode)
+                return JsonConvert.DeserializeObject<bool>(body);
+
+            return JsonConvert.DeserializeObject<bool>(body);
         }
     }
 }

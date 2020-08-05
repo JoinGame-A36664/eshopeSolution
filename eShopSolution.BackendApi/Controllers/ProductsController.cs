@@ -43,7 +43,7 @@ namespace eShopSolution.BackendApi.Controllers
 
         // SỬ DỤNG CÁC PHƯƠNG THỨC CẢU PRODUCT
 
-        // http://localhost:port/product/1
+        // http://localhost:api/product/prductId/languageId
         [HttpGet("{productId}/{languageId}")] // thằng này sẽ chuyền vào id cảu sản phẩm  trên ta lấy vd productId=1
         public async Task<IActionResult> GetById(int productId, string languageId)
         {
@@ -54,7 +54,7 @@ namespace eShopSolution.BackendApi.Controllers
         }
 
         [HttpPost]
-        [Consumes("multipart/form-data")]// nó cho ta nhận 1 kiểu chuyền lên là form data
+        [Consumes("multipart/form-data")]// nó cho ta nhận 1 kiểu chuyền lên là form data chỉ dùng cho HttpPost
         public async Task<IActionResult> Create([FromForm] ProductCreateRequest request) // request đã được add dữ liệu mới bên ProductApiClient nhe
         {
             // nhận dữ liệu từ frontend theo đường dẫn $"/api/products" và theo form như trên
@@ -77,8 +77,7 @@ namespace eShopSolution.BackendApi.Controllers
         }
 
         [HttpPut] // update tất cả phần
-        [Consumes("multipart/form-data")]
-        public async Task<IActionResult> Update([FromForm] ProductUpdateRequest request) // tất cả các thuộc tính phải using form data
+        public async Task<IActionResult> Update(ProductUpdateRequest request) // tất cả các thuộc tính phải using form data
         {
             if (!ModelState.IsValid)
             {
@@ -86,9 +85,9 @@ namespace eShopSolution.BackendApi.Controllers
             }
             var affectedResult = await _ProductService.Update(request); // thằng này chả về id nhe
             if (affectedResult == 0)
-                return BadRequest();// đây là nỗi 400
+                return BadRequest(affectedResult);// đây là nỗi 400
 
-            return Ok();
+            return Ok(affectedResult);
         }
 
         [HttpDelete("{productId}")]
@@ -98,7 +97,7 @@ namespace eShopSolution.BackendApi.Controllers
             if (affectedResult == 0)
                 return BadRequest();// đây là nỗi 400
 
-            return Ok();
+            return Ok(affectedResult);
         }
 
         //  [HttpPut("price/{id}/{newPrice}")] //đây là update cả phần
