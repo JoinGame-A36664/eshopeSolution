@@ -40,6 +40,7 @@ namespace eShopSolution.Data.EF
             modelBuilder.ApplyConfiguration(new ProductTranslationConfiguration());
             modelBuilder.ApplyConfiguration(new PromotionConfiguration());
             modelBuilder.ApplyConfiguration(new TransactionConfiguration());
+
             // song thì chạy lệnh :Add-Migration Initial để nó tạo ra bảng tương ứng
 
             // mỗi lần sửa nhớ chạy:update-database
@@ -47,6 +48,7 @@ namespace eShopSolution.Data.EF
             modelBuilder.ApplyConfiguration(new AppUserConfiguration());
             modelBuilder.ApplyConfiguration(new AppRoleConfiguration());
             modelBuilder.ApplyConfiguration(new ProductImageConfiguration());
+            modelBuilder.ApplyConfiguration(new SlideConfiguration());
 
             modelBuilder.Entity<IdentityUserClaim<Guid>>().ToTable("AppUserClaims");
             modelBuilder.Entity<IdentityUserLogin<Guid>>().ToTable("AppUserLogins").HasKey(x => x.UserId);
@@ -76,6 +78,7 @@ namespace eShopSolution.Data.EF
         // thằng này dùng để _context bên MangeProductService và PublicProductSerVice tiêm vào
 
         public DbSet<Product> Products { get; set; }
+        public DbSet<Slide> Slides { get; set; }
         public DbSet<Category> Categories { get; set; }
 
         public DbSet<AppConfig> AppConfigs { get; set; }

@@ -29,16 +29,26 @@ namespace eShopSolution.Application.Catalog.Products
         Task<ApiResult<PagedResult<ProductVm>>> GetAllPaging(GetManageProductPagingRequest request);
 
         // phương thức thêm ảnh vào database
-        Task<int> AddImage(int ProductId, ProductImageCreateRequest request);
+        Task<int> AddImage(ProductImageCreateRequest request);
 
         Task<int> RemoveImage(int imageId);
 
         Task<int> UpDateImage(int imageId, ProductImageUpdateRequest request);
 
-        Task<ProductImageViewModel> GetImageById(int imageId);
+        Task<ProductImageVm> GetImageById(int imageId);
 
-        Task<List<ProductImageViewModel>> GetListImages(int productId);
+        Task<List<ProductImageVm>> GetListImages(int productId);
 
         Task<PagedResult<ProductVm>> GetAllByCategoryId(string languageId, GetPublicProductPagingRequest request); // hiển thị danh sách sản phẩm theo categoryId (thể loại )
+
+        Task<ApiResult<bool>> CategoryAssign(int id, CategoryAssignRequest request);
+
+        Task<List<ProductVm>> GetFeaturedProducts(string langugeId, int take);
+
+        Task<List<ProductVm>> GetLatestProducts(string langugeId, int take);
+
+        Task<List<ProductVm>> GetRelatedProducts(int productId, string langugeId, int take);
+
+        Task<List<string>> GetImagePaths(int productId);
     }
 }

@@ -1,12 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
-using eShopeSolution.AddminApp.Services;
-using eShopeSolution.Utilities.Constants;
+﻿using eShopeSolution.Utilities.Constants;
+using eShopSolution.ApiIntergration;
 using eShopSolution.ViewModels.System.Users;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -15,6 +8,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Logging;
 using Microsoft.IdentityModel.Tokens;
+using System;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace eShopeSolution.AddminApp.Controllers
 {
@@ -63,7 +61,7 @@ namespace eShopeSolution.AddminApp.Controllers
             var userPrincipal = this.ValidateToken(result.ResultObj); // chuyền token sang UserPrincipal
 
             //https://docs.microsoft.com/en-us/aspnet/core/security/authentication/cookie?view=aspnetcore-3.1
-            var authProperties = new AuthenticationProperties // lấy tập Properties của cookies
+            var authProperties = new AuthenticationProperties //thuộc tính xác thực , lấy tập Properties của cookies
             {
                 ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(10),
                 IsPersistent = false  // là khi đăng nhập rồi mà tắt chương trình nó vẫn đăng nhập khi chạy lại
@@ -73,10 +71,11 @@ namespace eShopeSolution.AddminApp.Controllers
 
             HttpContext.Session.SetString(SystemConstants.Appsettings.Token, result.ResultObj);  //phải add thêm modul token vào trong startup của project AdminApp
 
+            // sign-in
             await HttpContext.SignInAsync(
-                    CookieAuthenticationDefaults.AuthenticationScheme,
-                    userPrincipal,
-                    authProperties);
+                    CookieAuthenticationDefaults.AuthenticationScheme, //scheme(kế hoạch)
+                    userPrincipal, //principal (hiệu trưởng)
+                    authProperties); //properties(tính chất)
 
             return RedirectToAction("Index", "Home");  // đi đến Index trong thư mục Home
         }

@@ -1,10 +1,10 @@
-﻿using System.Diagnostics;
+﻿using eShopeSolution.AddminApp.Models;
+using eShopeSolution.Utilities.Constants;
+using eShopSolution.AdminApp.Controllers;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using eShopeSolution.AddminApp.Models;
-using eShopSolution.AdminApp.Controllers;
-using eShopeSolution.Utilities.Constants;
-using Microsoft.AspNetCore.Http;
+using System.Diagnostics;
 
 namespace eShopeSolution.AddminApp.Controllers
 {
@@ -37,7 +37,7 @@ namespace eShopeSolution.AddminApp.Controllers
         public IActionResult Language(NavigationViewModel viewModel)
         {
             HttpContext.Session.SetString(SystemConstants.Appsettings.DefaultLanguageId, viewModel.CurrentLanguageId);
-            return RedirectToAction("Index");
+            return Redirect(viewModel.ReturnUrl);
         }
     }
 }

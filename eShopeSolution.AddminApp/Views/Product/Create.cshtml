@@ -4,7 +4,21 @@
     ViewData["Title"] = "Tạo mới sản phẩm";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
+@section Scripts{
+    <script src="https://cdn.ckeditor.com/ckeditor5/22.0.0/classic/ckeditor.js"></script>
+    <script>
+        ClassicEditor
+            .create(document.querySelector('#text_Details'), {
+                // toolbar: [ 'heading', '|', 'bold', 'italic', 'link' ]
+            })
+            .then(editor => {
+                window.editor = editor;
+            })
+            .catch(err => {
+                console.error(err.stack);
+            });
+    </script>
+}
 <div class="container-fluid">
     <h1 class="mt-4">Tạo mới sản phẩm</h1>
     <ol class="breadcrumb mb-4">
@@ -15,14 +29,22 @@
     <div class="card mb-4">
         <div class="card-header">
 
-            <a class="btn btn-success" asp-action="Index" asp-controller="User">Trở lại danh sách</a>
+            <a class="btn btn-success" asp-action="Index" asp-controller="Product">Trở lại danh sách</a>
         </div>
         <div class="card-body">
-            <div class="col-md-4">
+            <div class="col-md-8">
                 <!-- để đán giấu là khi submit lên sẽ có dạng multipart/form-data-->
                 <form asp-action="Create" enctype="multipart/form-data" method="post">
                     <!-- phải thêm enctype="multipart/form-data" nó mới nhận ra form của ProductController -->
+
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    @*<div class="col-md-3 form-group">
+                            <select class="btn btn-outline-primary form-control" name="categoryId" asp-for="categoryId" asp-items="@ViewBag.Categories">
+                                <option class="btn btn-light">
+                                    ...chọn danh mục...
+                                </option>
+                            </select>
+                        </div>*@
                     <div class="form-group">
                         <label asp-for="Name" class="control-label"></label>
                         <input asp-for="Name" class="form-control" />
@@ -51,7 +73,7 @@
                     </div>
                     <div class="form-group">
                         <label asp-for="Details" class="control-label"></label>
-                        <textarea asp-for="Details" rows="5" class="form-control"></textarea>
+                        <textarea id="text_Details" asp-for="Details" rows="35" class="form-control"></textarea>
                         <span asp-validation-for="Details" class="text-danger"></span>
                     </div>
                     <div class="form-group">

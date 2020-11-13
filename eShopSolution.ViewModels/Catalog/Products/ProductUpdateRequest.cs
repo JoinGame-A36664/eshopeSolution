@@ -31,6 +31,8 @@ namespace eShopSolution.ViewModels.Catalog.Products
         [Display(Name = "Ngôn ngữ")]
         public string LanguageId { set; get; } // chỉ để query chứ ko update thằng này
 
+        public bool IsFeatured { get; set; }
+
         [Display(Name = "Ảnh")]
         // phải install thằng IFormFile nó có chứ năng mã hóa nhị phân để ta sử dụng cho mã hóa nhị phân ảnh
         public IFormFile ThumbnailImage { get; set; }

@@ -13,19 +13,17 @@ namespace eShopSolution.Data.EF
     {
         public EShopDbContext CreateDbContext(string[] args)
         {
-
             // cấu hình đường dẫn tời file json là appsettings để lấy được ConectionString để kết nối với database
             IConfigurationRoot configuration = new ConfigurationBuilder()
                .SetBasePath(Directory.GetCurrentDirectory()) // để có SetBasePath tải thêm Microsoft.Extensions.Configuration.FileExtensions
                .AddJsonFile("appsettings.json") // để có AddJsonFile tải thêm  Microsoft.Extensions.Configuration.Json
                .Build();
 
-
-            // cấu hình ở trên giờ lấy ra để sử dụng
+            // cấu hình ở trên giờ lấy ra để sử dụng (lấy chuỗi connectionString ở cấu hình)
             var ConectionString = configuration.GetConnectionString("eShopSolutionDb");// đưa tên của ConectionString vào
 
             var optionsBuilder = new DbContextOptionsBuilder<EShopDbContext>();
-            optionsBuilder.UseSqlServer(ConectionString);// chuyền ConectionString vào 
+            optionsBuilder.UseSqlServer(ConectionString);// chuyền ConectionString vào
 
             return new EShopDbContext(optionsBuilder.Options);
         }

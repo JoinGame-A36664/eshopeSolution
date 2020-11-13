@@ -1,18 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using eShopeSolution.AddminApp.Services;
+﻿using eShopSolution.ApiIntergration;
 using eShopSolution.ViewModels.System.Users;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System;
 
 namespace eShopeSolution.AddminApp
 {
@@ -28,7 +24,7 @@ namespace eShopeSolution.AddminApp
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            // add thêm AddHttpClient vào đây yêu cầu bên UserApiClient
+            // add thêm AddHttpClient vào đây yêu cầu bên UserApiClient cho mấy thằng translation
             services.AddHttpClient();
 
             // add thêm nó cho phần cookies cho bên UseController sử dụng vào :https://docs.microsoft.com/en-us/aspnet/core/security/authentication/cookie?view=aspnetcore-3.1
@@ -43,11 +39,11 @@ namespace eShopeSolution.AddminApp
             services.AddControllersWithViews() // add them nuget FluentValidation
                 .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<LoginRequestValidator>()); // chúng ta cũng muốn dùng chung các valigator các hạn chế cho request bên này nên cũng cho thằng này vào nó sẽ valigator tất cả project
 
-            // add thêm Token để ửu dụng cho UsersController bên Api phải add nó sau AddControllersWithViews và ở dưới phải thêm app.UseSession() sau thằng Authorization()
+            // add thêm Token để sử dụng cho UsersController bên Api phải add nó sau AddControllersWithViews và ở dưới phải thêm app.UseSession() sau thằng Authorization()
             // ta phải add nuget Microsoft.AspNetCore.Session vào AdminAp
             services.AddSession(options =>
             {
-                // set thời gian thoát của Session
+                // set thời gian thoát của Session //quy định nhỏ nhất là 20'
                 options.IdleTimeout = TimeSpan.FromMinutes(30);  // lưu Session trong 30 phút sau đó tự động remove
             });
 
@@ -58,6 +54,7 @@ namespace eShopeSolution.AddminApp
             services.AddTransient<IUserApiClient, UserApiClient>();
             services.AddTransient<IRoleApiClient, RoleApiClient>();
             services.AddTransient<ILanguageApiClient, LanguageApiClient>();
+            services.AddTransient<ICategoryApiClient, CategoryApiClient>();
 
             //tiêm Di cho product
             services.AddTransient<IProductApiClient, ProductApiClient>();

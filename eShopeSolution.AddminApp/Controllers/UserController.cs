@@ -1,12 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
-using eShopeSolution.AddminApp.Services;
-using eShopSolution.AdminApp.Controllers;
+﻿using eShopSolution.AdminApp.Controllers;
+using eShopSolution.ApiIntergration;
 using eShopSolution.ViewModels.Common;
 using eShopSolution.ViewModels.System.Users;
 using Microsoft.AspNetCore.Authentication;
@@ -14,8 +7,9 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Logging;
-using Microsoft.IdentityModel.Tokens;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace eShopeSolution.AddminApp.Controllers
 {
@@ -36,7 +30,7 @@ namespace eShopeSolution.AddminApp.Controllers
         }
 
         //ĐÂY LÀ TÌM KIẾM VƠI KEYWORD BÊN Default đã thự hiện cộng key word nếu thấy để gữ lại đối tượng khi tìm thấy mà nó vẫn sử dụng được phân trang ,chỉ khi reset nó mới ko cộng keyword sang Default mà xem nhe
-        public async Task<IActionResult> Index(string keyword, int pageIndex = 1, int pageSize = 10) // gán mặc định nếu không có giá trị nào ,pageSize được tính rồi nhe tính cho phân trang
+        public async Task<IActionResult> Index(string keyword, int pageIndex = 1, int pageSize = 6) // gán mặc định nếu không có giá trị nào ,pageSize được tính rồi nhe tính cho phân trang
         {
             //phải add 1 view là viewName Index ,Template List ,Model class UserVm , use Layout chúng có sẵn tải về
 
@@ -49,7 +43,8 @@ namespace eShopeSolution.AddminApp.Controllers
             };
             var data = await _userApiClient.GetUsersPagings(request);
             // để giữ lại giá trị hiển thị tren ô tìm kiếm ta dùng viewBag chuyền về cho view
-            ViewBag.keyword = keyword;// tự động view sẽ nhận được
+            if (keyword != null)
+                ViewBag.keyword = keyword;// tự động view sẽ nhận được
 
             if (TempData["result"] != null)
             {

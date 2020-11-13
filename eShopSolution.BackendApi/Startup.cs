@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using eShopeSolution.Utilities.Constants;
+using eShopSolution.Application.Catalog.Categories;
 using eShopSolution.Application.Catalog.Products;
 using eShopSolution.Application.Common;
 using eShopSolution.Application.System.Languages;
 using eShopSolution.Application.System.Roles;
 using eShopSolution.Application.System.Users;
+using eShopSolution.Application.Utilities.Slides;
 using eShopSolution.Data.EF;
 using eShopSolution.Data.Entities;
 using eShopSolution.ViewModels.System.Users;
@@ -58,8 +60,11 @@ namespace eShopSolution.BackendApi
             services.AddTransient<RoleManager<AppRole>, RoleManager<AppRole>>();
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<IRoleService, RoleService>();
+            services.AddTransient<ICategoryService, CategoryService>();
 
             services.AddTransient<ILanguageService, LanguageService>();
+
+            services.AddTransient<ISlideService, SlideService>();
 
             // đây là Registor theo Di lẻ từng thằng 1
             //   services.AddTransient<IValidator<LoginRequest>, LoginRequestValidator>();// Khai báo cho Validator theo DI
@@ -78,6 +83,7 @@ namespace eShopSolution.BackendApi
                 // thêm 2 thằng này cho Swagger để tạo khóa   chức năng là tạo khóa khi đăng nhập và đúng token lấy từ đăng nhập thành công chuyền vào để khóa lại map với phương thức bên dưới để chỉ đăng nhập mới có quyền thực hiện các phương thức đó
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
+                    //header cho đăng nhập bên swagger
                     Description = @"JWT Authorization header using the Bearer scheme. \r\n\r\n
                       Enter 'Bearer' [space] and then your token in the text input below.
                       \r\n\r\nExample: 'Bearer 12345abcdef'",
@@ -113,6 +119,7 @@ namespace eShopSolution.BackendApi
             string signingKey = Configuration.GetValue<string>("Tokens:Key");
             byte[] signingKeyBytes = System.Text.Encoding.UTF8.GetBytes(signingKey);
 
+            // phần validation token từ client chả về nếu không đúng trả nhay về 401 ,TỰ GIẢI MÃ VÀ VALIDATION
             services.AddAuthentication(opt =>
             {
                 opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;             // phải cài đặ nuget cho JwtBearerDefaults là Microsoft.AspNetCore.Authentication.JwtBearer

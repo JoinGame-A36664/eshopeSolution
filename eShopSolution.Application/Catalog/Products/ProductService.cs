@@ -1,4 +1,5 @@
-﻿using eShopeSolution.Utilities.Exceptions;
+﻿using eShopeSolution.Utilities.Constants;
+using eShopeSolution.Utilities.Exceptions;
 using eShopSolution.Application.Common;
 using eShopSolution.Data.EF;
 using eShopSolution.Data.Entities;
@@ -12,6 +13,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Http.Headers;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 
 namespace eShopSolution.Application.Catalog.Products
@@ -88,6 +90,7 @@ namespace eShopSolution.Application.Catalog.Products
             }
 
             _context.Products.Add(product);
+
             // save bất đồng bộ nó sẽ được đa luồng nên có thể sử lý được nhiều Request cùng một lúc
             await _context.SaveChangesAsync(); // thay vì chờ Save song nó có thể nhả ra và thực hiện Request khác cùng một lúc
             return product.Id;
@@ -105,9 +108,11 @@ namespace eShopSolution.Application.Catalog.Products
 
             // tìm xem có thằng nào giống thứ muốn xóa không // nhơ phải xóa ảnh trước rồi mới xóa sản phẩm
             var images = _context.ProductImages.Where(x => x.ProductId == ProductId); // tất cả những ảnh có ProductId = Id của sản phẩm cần xóa thì ta sẽ xóa tấ vì một sản phẩm có nhiều ảnh
+
+            // tát nhiên 1 sản phẩm có nhiều image lên phải xóa hết vì ta xóa sản phẩm
             foreach (var image in images)
             {
-                await _storageService.DeleteFileAsync(image.ImagePath);
+                await _storageService.DeleteFileAsync(image.ImagePath);  // xóa cả image tương ứng
             }
 
             // xóa ảnh song ta xóa sản phẩm
@@ -121,18 +126,25 @@ namespace eShopSolution.Application.Catalog.Products
         {
             // bước 1 :select join  ,, nhớ nhe giữ liệu có đủ mới cho query chỗ này
             var query = from p in _context.Products
-                        join pt in _context.ProductTranslations on p.Id equals pt.ProductId
-                        //join pic in _context.ProductInCategories on p.Id equals pic.ProductId
-                        //join c in _context.Categories on pic.CategoryId equals c.Id
+                        join pt in _context.ProductTranslations on p.Id equals pt.ProductId into ppt
+                        from pt in ppt.DefaultIfEmpty() //left join
+                        join pic in _context.ProductInCategories on p.Id equals pic.ProductId
+                        into ppic
+                        from pic in ppic.DefaultIfEmpty() // leftjoin
+                        join pi in _context.ProductImages on p.Id equals pi.ProductId into ppi
+                        from pi in ppi.DefaultIfEmpty()
+                        join c in _context.Categories on pic.CategoryId equals c.Id
+                        into picc
+                        from c in picc.DefaultIfEmpty() // leftjoin
                         where pt.LanguageId == request.LanguageId
-                        select new { p, pt };
+                        select new { p, pt, pic, pi };
             // bước 3: filter theo điều kiện
             if (!string.IsNullOrEmpty(request.KeyWord))
                 query = query.Where(x => x.pt.Name.Contains(request.KeyWord));
-            //if (request.CategoryIds != null && request.CategoryIds.Count > 0)// có nghĩa là có tất cả các tìm kiếm nào
-            //{
-            //    query = query.Where(p => request.CategoryIds.Contains(p.pic.CategoryId));//một trong só nhữ thằng này thì mới được
-            //}
+            if (request.CategoryId != null && request.CategoryId != 0)// có nghĩa là có tất cả các tìm kiếm nào
+            {
+                query = query.Where(p => p.pic.CategoryId == request.CategoryId);//một trong só nhữ thằng này thì mới được
+            }
             // bước 3: paging
             int totalRow = await query.CountAsync(); // lấy ra tông số số dòng để phân trang
             var data = await query.Skip((request.PageIndex - 1) * request.PageSize)
@@ -140,18 +152,19 @@ namespace eShopSolution.Application.Catalog.Products
                 .Select(x => new ProductVm()
                 {
                     Id = x.p.Id,
-                    Name = x.pt.Name,
+                    Name = x.pt == null ? SystemConstants.ProductConstants.NA : x.pt.Name,
                     DateCreated = x.p.DateCreated,
-                    Description = x.pt.Description,
-                    Details = x.pt.Details,
+                    Description = x.pt == null ? SystemConstants.ProductConstants.NA : x.pt.Description,
+                    Details = x.pt == null ? SystemConstants.ProductConstants.NA : x.pt.Details,
                     LanguageId = x.pt.LanguageId,
                     OriginalPrice = x.p.OriginalPrice,
                     Price = x.p.Price,
-                    SeoAlias = x.pt.SeoAlias,
-                    SeoDescription = x.pt.SeoDescription,
-                    SeoTitle = x.pt.SeoTitle,
+                    SeoAlias = x.pt == null ? SystemConstants.ProductConstants.NA : x.pt.SeoAlias,
+                    SeoDescription = x.pt == null ? SystemConstants.ProductConstants.NA : x.pt.SeoDescription,
+                    SeoTitle = x.pt == null ? SystemConstants.ProductConstants.NA : x.pt.SeoTitle,
                     Stock = x.p.Stock,
-                    ViewCount = x.p.ViewCount
+                    ViewCount = x.p.ViewCount,
+                    ThumbnailImage = x.pi.ImagePath
                 }).ToListAsync(); // vì ta Async ở đây nên trên kia ta chỉ cần await để đẩy vào data là song  nhớ là ToListAsync nha vì bên PageRsult Item ta để là list
                                   // bước 4: selecet and Project
             var pagedResult = new PagedResult<ProductVm>()
@@ -173,10 +186,21 @@ namespace eShopSolution.Application.Catalog.Products
         public async Task<ProductVm> GetById(int productId, string languageId)
         {
             var product = await _context.Products.FindAsync(productId);
-            // lấy ra thằng đầu tiên thảo mãn
+            // lấy ra thằng đầu tiên thảo mãn ,FirstOrDefaultAsync
+            /*
+               First hoặc FirstOrDefault nếu em nghĩ kết quả có thể là nhiều hơn 1 bản ghi
+               SingleOrDefault khi không có phần tử nào nó sẽ trả về null còn nếu trả về 1 phần thử thì nó có giá trị, nếu 2 phần tử thì lỗi.
+                Single thì nếu không có phần  tử nào nó sẽ lỗi luôn, chỉ có kết quả khi có 1 bản ghi thoả mãn
+             */
             var productTranslation = await _context.ProductTranslations.FirstOrDefaultAsync(x => x.ProductId == productId
             && x.LanguageId == languageId);
 
+            var categories = await (from c in _context.Categories
+                                    join ct in _context.CategoryTranslations on c.Id equals ct.CategoryId
+                                    join pic in _context.ProductInCategories
+                                    on c.Id equals pic.CategoryId
+                                    where pic.ProductId == productId && ct.LanguageId == languageId
+                                    select ct.Name).ToListAsync();
             var productViewModel = new ProductVm()
             {
                 Id = product.Id,
@@ -191,7 +215,9 @@ namespace eShopSolution.Application.Catalog.Products
                 SeoDescription = productTranslation != null ? productTranslation.SeoDescription : null,
                 SeoTitle = productTranslation != null ? productTranslation.SeoTitle : null,
                 Stock = product.Stock,
-                ViewCount = product.ViewCount
+                ViewCount = product.ViewCount,
+                Categories = categories,
+                IsFeatured = product.IsFeatured
             };
             return productViewModel;
         }
@@ -233,6 +259,14 @@ namespace eShopSolution.Application.Catalog.Products
                 }
             }
 
+            _context.ProductTranslations.Update(productTranslation);
+
+            if (request.IsFeatured || !request.IsFeatured)
+            {
+                product.IsFeatured = request.IsFeatured;
+                _context.Products.Update(product);
+            }
+
             return await _context.SaveChangesAsync();
         }
 
@@ -249,13 +283,20 @@ namespace eShopSolution.Application.Catalog.Products
         {
             var product = await _context.Products.FindAsync(ProductId);
             if (product == null) throw new EShopeException($"Cannot find a Product with id :{ProductId}");
+            if (addedQuantity == 0)
+            {
+                product.Stock += 1;
+                await _context.SaveChangesAsync();
+                product.Stock -= 1;
+                return await _context.SaveChangesAsync() > 0;
+            }
             product.Stock += addedQuantity; // số lượng cộng với chất lượng
             return await _context.SaveChangesAsync() > 0;// nếu >0 thì nó return true là thành công
         }
 
         // các phương thức về Image
 
-        public async Task<int> AddImage(int ProductId, ProductImageCreateRequest request)
+        public async Task<int> AddImage(ProductImageCreateRequest request)
         {
             // tạo ra một image để add
             var productImage = new ProductImage()
@@ -263,11 +304,12 @@ namespace eShopSolution.Application.Catalog.Products
                 Caption = request.Caption,
                 DateCreated = DateTime.Now,
                 Isdefault = request.Isdefault,
-                ProductId = ProductId,
+                ProductId = request.ProductId,
                 SortOrder = request.SortOrder
             };
             if (request.ImageFile != null)
             {
+                // lấy địa chỉ file và kích thước file trong request
                 productImage.ImagePath = await this.SaveFile(request.ImageFile);
                 productImage.FileSize = request.ImageFile.Length;
             }
@@ -291,12 +333,12 @@ namespace eShopSolution.Application.Catalog.Products
             return await _context.SaveChangesAsync();
         }
 
-        public async Task<ProductImageViewModel> GetImageById(int imageId)
+        public async Task<ProductImageVm> GetImageById(int imageId)
         {
             var image = await _context.ProductImages.FindAsync(imageId);
             if (image == null)
                 throw new EShopeException($"Cannot find an image with id:{imageId}");
-            var viewModel = new ProductImageViewModel()
+            var viewModel = new ProductImageVm()
             {
                 Caption = image.Caption,
                 DateCreated = image.DateCreated,
@@ -311,10 +353,10 @@ namespace eShopSolution.Application.Catalog.Products
             return viewModel;
         }
 
-        public async Task<List<ProductImageViewModel>> GetListImages(int productId)
+        public async Task<List<ProductImageVm>> GetListImages(int productId)
         {
             return await _context.ProductImages.Where(x => x.ProductId == productId)
-                .Select(i => new ProductImageViewModel()
+                .Select(i => new ProductImageVm()
                 {
                     Caption = i.Caption,
                     DateCreated = i.DateCreated,
@@ -381,7 +423,7 @@ namespace eShopSolution.Application.Catalog.Products
                     SeoDescription = x.pt.SeoDescription,
                     SeoTitle = x.pt.SeoTitle,
                     Stock = x.p.Stock,
-                    ViewCount = x.p.ViewCount
+                    ViewCount = x.p.ViewCount,
                 }).ToListAsync(); // vì ta Async ở đây nên trên kia ta chỉ cần await để đẩy vào data là song  nhớ là ToListAsync nha vì bên PageRsult Item ta để là list
                                   // bước 4: selecet and Project
             var pagedResult = new PagedResult<ProductVm>()
@@ -392,6 +434,163 @@ namespace eShopSolution.Application.Catalog.Products
                 Items = data
             };
             return pagedResult;
+        }
+
+        public async Task<ApiResult<bool>> CategoryAssign(int id, CategoryAssignRequest request)
+        {
+            // lấy user
+            var user = await _context.Products.FindAsync(id); // tìm thoe id mà gặp phát lấy ra luân rồi không tìm tiếp  // co nghĩa là chỉ 1
+            if (user == null) // nếu user không tồn tại
+            {
+                return new ApiErrorResult<bool>($"sản phẩm với id {id} không tồn tại");
+            }
+            foreach (var category in request.Categories)
+            {
+                var productInCategory = await _context.ProductInCategories.FirstOrDefaultAsync(x =>
+                x.CategoryId == int.Parse(category.Id)
+                && x.ProductId == id);
+                if (productInCategory != null && category.Selected == false)
+                {
+                    _context.ProductInCategories.Remove(productInCategory);
+                }
+                else if (productInCategory == null && category.Selected)
+                {
+                    await _context.ProductInCategories.AddAsync(new ProductInCategory()
+                    {
+                        CategoryId = int.Parse(category.Id),
+                        ProductId = id
+                    }); // ở đay là add từng role nên không có s nhe
+                }
+            }
+            await _context.SaveChangesAsync();
+            return new ApiSuccessResult<bool>();
+        }
+
+        public async Task<List<ProductVm>> GetFeaturedProducts(string langugeId, int take)
+        {
+            var query = from p in _context.Products
+                        join pt in _context.ProductTranslations on p.Id equals pt.ProductId
+                        join pic in _context.ProductInCategories on p.Id equals pic.ProductId
+                        into ppic
+                        from pic in ppic.DefaultIfEmpty() // leftjoin
+                        join pi in _context.ProductImages on p.Id equals pi.ProductId into ppi
+                        from pi in ppi.DefaultIfEmpty()
+                        where (pi.Isdefault)
+                        join c in _context.Categories on pic.CategoryId equals c.Id into picc
+                        from c in picc.DefaultIfEmpty() // leftjoin
+                        where pt.LanguageId == langugeId && (pi == null || pi.Isdefault == true) && p.IsFeatured == true
+                        select new { p, pt, pic, pi };
+
+            var data = await query.OrderByDescending(x => x.p.DateCreated).Take(take)
+                .Select(x => new ProductVm()
+                {
+                    Id = x.p.Id,
+                    Name = x.pt.Name,
+                    DateCreated = x.p.DateCreated,
+                    Description = x.pt.Description,
+                    Details = x.pt.Details,
+                    LanguageId = x.pt.LanguageId,
+                    OriginalPrice = x.p.OriginalPrice,
+                    Price = x.p.Price,
+                    SeoAlias = x.pt.SeoAlias,
+                    SeoDescription = x.pt.SeoDescription,
+                    SeoTitle = x.pt.SeoTitle,
+                    Stock = x.p.Stock,
+                    ViewCount = x.p.ViewCount,
+                    ThumbnailImage = x.pi.ImagePath
+                }).ToListAsync(); // vì ta Async ở đây nên trên kia ta chỉ cần await để đẩy vào data là song  nhớ là ToListAsync nha vì bên PageRsult Item ta để là list
+                                  // bước 4: selecet and Project
+
+            return data;
+        }
+
+        public async Task<List<ProductVm>> GetLatestProducts(string langugeId, int take)
+        {
+            var query = from p in _context.Products
+                        join pt in _context.ProductTranslations on p.Id equals pt.ProductId
+                        join pic in _context.ProductInCategories on p.Id equals pic.ProductId
+                        into ppic
+                        from pic in ppic.DefaultIfEmpty() // leftjoin
+                        join pi in _context.ProductImages on p.Id equals pi.ProductId into ppi
+                        from pi in ppi.DefaultIfEmpty()
+                        where (pi.Isdefault)
+                        join c in _context.Categories on pic.CategoryId equals c.Id into picc
+                        from c in picc.DefaultIfEmpty() // leftjoin
+                        where pt.LanguageId == langugeId && (pi == null || pi.Isdefault == true)
+                        select new { p, pt, pic, pi };
+
+            var data = await query.OrderByDescending(x => x.p.DateCreated).Take(take)
+                .Select(x => new ProductVm()
+                {
+                    Id = x.p.Id,
+                    Name = x.pt.Name,
+                    DateCreated = x.p.DateCreated,
+                    Description = x.pt.Description,
+                    Details = x.pt.Details,
+                    LanguageId = x.pt.LanguageId,
+                    OriginalPrice = x.p.OriginalPrice,
+                    Price = x.p.Price,
+                    SeoAlias = x.pt.SeoAlias,
+                    SeoDescription = x.pt.SeoDescription,
+                    SeoTitle = x.pt.SeoTitle,
+                    Stock = x.p.Stock,
+                    ViewCount = x.p.ViewCount,
+                    ThumbnailImage = x.pi.ImagePath
+                }).ToListAsync(); // vì ta Async ở đây nên trên kia ta chỉ cần await để đẩy vào data là song  nhớ là ToListAsync nha vì bên PageRsult Item ta để là list
+                                  // bước 4: selecet and Project
+
+            return data;
+        }
+
+        public async Task<List<ProductVm>> GetRelatedProducts(int productId, string langugeId, int take)
+        {
+            var product = from p in _context.Products
+                          join pc in _context.ProductInCategories on p.Id equals pc.ProductId
+                          where (p.Id == productId)
+                          select pc.CategoryId;
+            int categoryId = product.FirstOrDefault();
+
+            var query = from p in _context.Products
+                        join pt in _context.ProductTranslations on p.Id equals pt.ProductId
+                        join pic in _context.ProductInCategories on p.Id equals pic.ProductId
+                        into ppic
+                        from pic in ppic.DefaultIfEmpty() // leftjoin
+                        where (pic.CategoryId == categoryId)
+                        join pi in _context.ProductImages on p.Id equals pi.ProductId into ppi
+                        from pi in ppi.DefaultIfEmpty()
+                        where (pi.Isdefault)
+                        join c in _context.Categories on pic.CategoryId equals c.Id into picc
+                        from c in picc.DefaultIfEmpty() // leftjoin
+                        where pt.LanguageId == langugeId && (pi == null || pi.Isdefault == true)
+                        select new { p, pt, pic, pi };
+
+            var data = await query.OrderByDescending(x => x.p.DateCreated).Take(take)
+                .Select(x => new ProductVm()
+                {
+                    Id = x.p.Id,
+                    Name = x.pt.Name,
+                    DateCreated = x.p.DateCreated,
+                    Description = x.pt.Description,
+                    Details = x.pt.Details,
+                    LanguageId = x.pt.LanguageId,
+                    OriginalPrice = x.p.OriginalPrice,
+                    Price = x.p.Price,
+                    SeoAlias = x.pt.SeoAlias,
+                    SeoDescription = x.pt.SeoDescription,
+                    SeoTitle = x.pt.SeoTitle,
+                    Stock = x.p.Stock,
+                    ViewCount = x.p.ViewCount,
+                    ThumbnailImage = x.pi.ImagePath
+                }).ToListAsync(); // vì ta Async ở đây nên trên kia ta chỉ cần await để đẩy vào data là song  nhớ là ToListAsync nha vì bên PageRsult Item ta để là list
+                                  // bước 4: selecet and Project
+
+            return data;
+        }
+
+        public async Task<List<string>> GetImagePaths(int productId)
+        {
+            var imagePaths = await _context.ProductImages.Where(x => x.ProductId == productId).Select(x => x.ImagePath).ToListAsync();
+            return imagePaths;
         }
     }
 }

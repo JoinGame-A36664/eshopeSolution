@@ -1,6 +1,6 @@
 ﻿using eShopeSolution.AddminApp.Models;
-using eShopeSolution.AddminApp.Services;
 using eShopeSolution.Utilities.Constants;
+using eShopSolution.ApiIntergration;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;

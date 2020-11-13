@@ -39,6 +39,7 @@ namespace eShopSolution.ViewModels.Catalog.Products
         [Display(Name = "Tên Seo")]
         public string SeoAlias { get; set; }
 
+        public bool? IsFeatured { get; set; }
         public string LanguageId { set; get; }
 
         // phải install thằng IFormFile nó có chứ năng mã hóa nhị phân để ta sử dụng cho mã hóa nhị phân ảnh

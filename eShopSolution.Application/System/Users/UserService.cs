@@ -32,7 +32,7 @@ namespace eShopSolution.Application.System.Users
             _config = config;
         }
 
-        public async Task<ApiResult<string>> Authencate(LoginRequest request) // xác thực đăng nhập
+        public async Task<ApiResult<string>> Authencate(LoginRequest request) // xác thực đăng nhập 
         {
             var user = await _userManager.FindByNameAsync(request.UserName);
             if (user == null)
@@ -44,7 +44,7 @@ namespace eShopSolution.Application.System.Users
                 return new ApiErrorResult<string>("Mật Khẩu Tài Khoản Không Đúng"); // trả về một object error
             }
             var roles = await _userManager.GetRolesAsync(user); // lấy một list role của user
-            var claims = new[] //claims yêu cầu trả lại
+            var claims = new[] //claims yêu cầu trả lại,quyền đòi hỏi
             {
                 new Claim(ClaimTypes.GivenName,user.FirstName),
                  new Claim(ClaimTypes.Email,user.Email),
@@ -57,7 +57,8 @@ namespace eShopSolution.Application.System.Users
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Tokens:Key"])); // lấy từ cấu hình appseting theo Tokens và "Key": "0123456789ABCDEF",
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-            var token = new JwtSecurityToken(_config["Tokens:Issuer"],  // "Issuer": "https://thanglong.edu.vn/"
+            var token = new JwtSecurityToken(
+                _config["Tokens:Issuer"],  // "Issuer": "https://thanglong.edu.vn/"
                 _config["Tokens:Issuer"],
                 claims,
                 expires: DateTime.Now.AddHours(3), // token hết hạn sau 3 tiếng
@@ -114,7 +115,10 @@ namespace eShopSolution.Application.System.Users
             {
                 // Tìm kiếm bằng keyword hiện tại ta đang cho shearch bằng user name và phoneNumgber ta có thẻ cho thêm ở đây nhe
                 query = query.Where(x => x.UserName.Contains(request.KeyWord)
-                || x.PhoneNumber.Contains(request.KeyWord) || x.Email.Contains(request.KeyWord) || x.LastName.Contains(request.KeyWord));
+                || x.PhoneNumber.Contains(request.KeyWord)
+                || x.Email.Contains(request.KeyWord)
+                || x.LastName.Contains(request.KeyWord)
+                || x.FirstName.Contains(request.KeyWord));
             }
             int totalRow = await query.CountAsync(); // lấy ra tông số số dòng để phân trang
             var data = await query.Skip((request.PageIndex - 1) * request.PageSize)
@@ -174,7 +178,7 @@ namespace eShopSolution.Application.System.Users
         public async Task<ApiResult<bool>> RoleAssign(Guid Id, RoleAssignRequest request)
         {
             // lấy user
-            var user = await _userManager.FindByIdAsync(Id.ToString());
+            var user = await _userManager.FindByIdAsync(Id.ToString()); // tìm thoe id mà gặp phát lấy ra luân rồi không tìm tiếp  // co nghĩa là chỉ 1
             if (user == null) // nếu user không tồn tại
             {
                 return new ApiErrorResult<bool>("Tài khoản không tồn tại");
@@ -209,7 +213,7 @@ namespace eShopSolution.Application.System.Users
         public async Task<ApiResult<bool>> Update(Guid id, UserUpdateRequest request)
         {
             // Users lấy ra tât vả user
-            if (await _userManager.Users.AnyAsync(x => x.Email == request.Email && x.Id != id))
+            if (await _userManager.Users.AnyAsync(x => x.Email == request.Email && x.Id != id))  // xem bất kì thằng nào thảo mã thằng này không
             {
                 return new ApiErrorResult<bool>("Emai đã tồn tại");
             }
