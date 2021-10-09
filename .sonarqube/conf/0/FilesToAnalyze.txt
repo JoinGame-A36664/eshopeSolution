@@ -1,2 +1,0 @@
-﻿F:\C#\Website\BackEnd\hocDuAnWEB\eShopSolution\eShopeSolution.Utilities\Constants\SystemConstants.cs
-F:\C#\Website\BackEnd\hocDuAnWEB\eShopSolution\eShopeSolution.Utilities\Exceptions\EShopeException.cs
