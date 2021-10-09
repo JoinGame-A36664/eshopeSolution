@@ -1,0 +1,15 @@
+﻿F:\C#\Website\BackEnd\hocDuAnWEB\eShopSolution\eShopSolution.ApiIntergration\BaseApiClient.cs
+F:\C#\Website\BackEnd\hocDuAnWEB\eShopSolution\eShopSolution.ApiIntergration\CategoryApiClient.cs
+F:\C#\Website\BackEnd\hocDuAnWEB\eShopSolution\eShopSolution.ApiIntergration\ICategoryApiClient.cs
+F:\C#\Website\BackEnd\hocDuAnWEB\eShopSolution\eShopSolution.ApiIntergration\ILanguageApiClient.cs
+F:\C#\Website\BackEnd\hocDuAnWEB\eShopSolution\eShopSolution.ApiIntergration\IOrderApiClient.cs
+F:\C#\Website\BackEnd\hocDuAnWEB\eShopSolution\eShopSolution.ApiIntergration\IProductApiClient.cs
+F:\C#\Website\BackEnd\hocDuAnWEB\eShopSolution\eShopSolution.ApiIntergration\IRoleApiClient.cs
+F:\C#\Website\BackEnd\hocDuAnWEB\eShopSolution\eShopSolution.ApiIntergration\ISlideApiClient.cs
+F:\C#\Website\BackEnd\hocDuAnWEB\eShopSolution\eShopSolution.ApiIntergration\IUserApiClient.cs
+F:\C#\Website\BackEnd\hocDuAnWEB\eShopSolution\eShopSolution.ApiIntergration\LanguageApiClient.cs
+F:\C#\Website\BackEnd\hocDuAnWEB\eShopSolution\eShopSolution.ApiIntergration\OrderApiClient.cs
+F:\C#\Website\BackEnd\hocDuAnWEB\eShopSolution\eShopSolution.ApiIntergration\ProductApiClient.cs
+F:\C#\Website\BackEnd\hocDuAnWEB\eShopSolution\eShopSolution.ApiIntergration\RoleApiClient.cs
+F:\C#\Website\BackEnd\hocDuAnWEB\eShopSolution\eShopSolution.ApiIntergration\SlideApiClient.cs
+F:\C#\Website\BackEnd\hocDuAnWEB\eShopSolution\eShopSolution.ApiIntergration\UserApiClient.cs

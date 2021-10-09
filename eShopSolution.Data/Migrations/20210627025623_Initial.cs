@@ -467,7 +467,7 @@ namespace eShopSolution.Data.Migrations
             migrationBuilder.InsertData(
                 table: "AppRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Description", "Name", "NormalizedName" },
-                values: new object[] { new Guid("3792af46-9a8f-4ae6-a1c9-c9c910941e5b"), "86c69cc0-ef2d-474b-8ba9-b18f395344ae", "Administrator role", "admin", "admin" });
+                values: new object[] { new Guid("3792af46-9a8f-4ae6-a1c9-c9c910941e5b"), "e2818127-59f6-418a-a847-57a174c44446", "Administrator role", "admin", "admin" });
 
             migrationBuilder.InsertData(
                 table: "AppUserRoles",
@@ -477,7 +477,7 @@ namespace eShopSolution.Data.Migrations
             migrationBuilder.InsertData(
                 table: "AppUsers",
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "DOB", "Email", "EmailConfirmed", "FirstName", "LastName", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
-                values: new object[] { new Guid("be525247-1560-4657-8748-3563e08d7ed3"), 0, "f27d6a6a-2fc4-42f0-8125-88fb3695f938", new DateTime(2001, 6, 16, 0, 0, 0, 0, DateTimeKind.Unspecified), "nguyenluc2001@gmail.com", true, "luc", "van", false, null, "nguyenluc2001@gmail.com", "admin", "AQAAAAEAACcQAAAAEDTSCvQZyC0H6jfPGr6xJ4J1kDJ/Bjtg12g5ISDmy5cLERghzIWfG2yOBpE+l0FlWw==", null, false, "", false, "admin" });
+                values: new object[] { new Guid("be525247-1560-4657-8748-3563e08d7ed3"), 0, "8cec6845-c985-413c-aca3-f442457cc865", new DateTime(2001, 6, 16, 0, 0, 0, 0, DateTimeKind.Unspecified), "nguyenluc2001@gmail.com", true, "luc", "van", false, null, "nguyenluc2001@gmail.com", "admin", "AQAAAAEAACcQAAAAEDeGKDz2N+6Q8eQgG+NWbd8VkMvtYY4HzWootH8+0Lgz3NrryexlKv3r09z/gOJQ/A==", null, false, "", false, "admin" });
 
             migrationBuilder.InsertData(
                 table: "Categories",
@@ -502,12 +502,12 @@ namespace eShopSolution.Data.Migrations
                 columns: new[] { "Id", "DateCreated", "IsFeatured", "OriginalPrice", "Price" },
                 values: new object[,]
                 {
-                    { 6, new DateTime(2021, 6, 4, 17, 5, 6, 780, DateTimeKind.Local).AddTicks(5807), true, 1000000m, 45000000m },
-                    { 5, new DateTime(2021, 6, 4, 17, 5, 6, 780, DateTimeKind.Local).AddTicks(5805), true, 1000000m, 1200000m },
-                    { 4, new DateTime(2021, 6, 4, 17, 5, 6, 780, DateTimeKind.Local).AddTicks(5803), true, 1000000m, 3000000m },
-                    { 1, new DateTime(2021, 6, 4, 17, 5, 6, 779, DateTimeKind.Local).AddTicks(4099), true, 1000000m, 2000000m },
-                    { 2, new DateTime(2021, 6, 4, 17, 5, 6, 780, DateTimeKind.Local).AddTicks(5652), true, 1000000m, 2000000m },
-                    { 3, new DateTime(2021, 6, 4, 17, 5, 6, 780, DateTimeKind.Local).AddTicks(5800), true, 1000000m, 2500000m }
+                    { 6, new DateTime(2021, 6, 27, 9, 56, 22, 296, DateTimeKind.Local).AddTicks(2081), true, 1000000m, 45000000m },
+                    { 5, new DateTime(2021, 6, 27, 9, 56, 22, 296, DateTimeKind.Local).AddTicks(2079), true, 1000000m, 1200000m },
+                    { 4, new DateTime(2021, 6, 27, 9, 56, 22, 296, DateTimeKind.Local).AddTicks(2077), true, 1000000m, 3000000m },
+                    { 1, new DateTime(2021, 6, 27, 9, 56, 22, 295, DateTimeKind.Local).AddTicks(710), true, 1000000m, 2000000m },
+                    { 2, new DateTime(2021, 6, 27, 9, 56, 22, 296, DateTimeKind.Local).AddTicks(2010), true, 1000000m, 2000000m },
+                    { 3, new DateTime(2021, 6, 27, 9, 56, 22, 296, DateTimeKind.Local).AddTicks(2074), true, 1000000m, 2500000m }
                 });
 
             migrationBuilder.InsertData(
@@ -539,12 +539,12 @@ namespace eShopSolution.Data.Migrations
                 columns: new[] { "Id", "Caption", "DateCreated", "FileSize", "ImagePath", "Isdefault", "ProductId", "SortOrder" },
                 values: new object[,]
                 {
-                    { 1, "", new DateTime(2021, 6, 4, 17, 5, 6, 781, DateTimeKind.Local).AddTicks(1879), 100L, "0f75e9c5-b794-4f2d-a328-7de10107b36c.jpg", true, 1, 1 },
-                    { 2, "", new DateTime(2021, 6, 4, 17, 5, 6, 781, DateTimeKind.Local).AddTicks(4363), 100L, "4b3f6988-c6ab-4f18-bf60-e5adf20c6ad3.jpeg", true, 2, 1 },
-                    { 6, "", new DateTime(2021, 6, 4, 17, 5, 6, 781, DateTimeKind.Local).AddTicks(4413), 100L, "e0254137-2422-40d4-ba03-a3cf6559bf17.jpg", true, 6, 1 },
-                    { 3, "", new DateTime(2021, 6, 4, 17, 5, 6, 781, DateTimeKind.Local).AddTicks(4407), 100L, "5b6cd57e-0dab-4a51-9150-36db8773aac8.jpeg", true, 3, 1 },
-                    { 5, "", new DateTime(2021, 6, 4, 17, 5, 6, 781, DateTimeKind.Local).AddTicks(4411), 100L, "bd360e3b-e1f1-4ec6-b33b-a6c7a69e665c.jpg", true, 5, 1 },
-                    { 4, "", new DateTime(2021, 6, 4, 17, 5, 6, 781, DateTimeKind.Local).AddTicks(4409), 100L, "804e1e0c-ec76-4fd9-a91f-d400e99ff414.jpeg", true, 4, 1 }
+                    { 1, "", new DateTime(2021, 6, 27, 9, 56, 22, 296, DateTimeKind.Local).AddTicks(5808), 100L, "0f75e9c5-b794-4f2d-a328-7de10107b36c.jpg", true, 1, 1 },
+                    { 2, "", new DateTime(2021, 6, 27, 9, 56, 22, 296, DateTimeKind.Local).AddTicks(7153), 100L, "4b3f6988-c6ab-4f18-bf60-e5adf20c6ad3.jpeg", true, 2, 1 },
+                    { 6, "", new DateTime(2021, 6, 27, 9, 56, 22, 296, DateTimeKind.Local).AddTicks(7209), 100L, "e0254137-2422-40d4-ba03-a3cf6559bf17.jpg", true, 6, 1 },
+                    { 3, "", new DateTime(2021, 6, 27, 9, 56, 22, 296, DateTimeKind.Local).AddTicks(7203), 100L, "5b6cd57e-0dab-4a51-9150-36db8773aac8.jpeg", true, 3, 1 },
+                    { 5, "", new DateTime(2021, 6, 27, 9, 56, 22, 296, DateTimeKind.Local).AddTicks(7208), 100L, "bd360e3b-e1f1-4ec6-b33b-a6c7a69e665c.jpg", true, 5, 1 },
+                    { 4, "", new DateTime(2021, 6, 27, 9, 56, 22, 296, DateTimeKind.Local).AddTicks(7206), 100L, "804e1e0c-ec76-4fd9-a91f-d400e99ff414.jpeg", true, 4, 1 }
                 });
 
             migrationBuilder.InsertData(

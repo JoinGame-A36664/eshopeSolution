@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ProjectInfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.sonarsource.com/msbuild/integration/2015/1">
+  <ProjectName>eShopeSolution.AddminApp</ProjectName>
+  <ProjectLanguage>C#</ProjectLanguage>
+  <ProjectType>Product</ProjectType>
+  <ProjectGuid>4d3e12c0-c9a3-497d-beaf-2da80ac3d329</ProjectGuid>
+  <FullPath>F:\C#\Website\BackEnd\hocDuAnWEB\eShopSolution\eShopeSolution.AddminApp\eShopeSolution.AddminApp.csproj</FullPath>
+  <IsExcluded>false</IsExcluded>
+  <AnalysisResults>
+    <AnalysisResult Id="FilesToAnalyze" Location="F:\C#\Website\BackEnd\hocDuAnWEB\eShopSolution\.sonarqube\conf\5\FilesToAnalyze.txt" />
+  </AnalysisResults>
+  <AnalysisSettings>
+    <Property Name="sonar.cs.roslyn.reportFilePaths">F:\C#\Website\BackEnd\hocDuAnWEB\eShopSolution\.sonarqube\out\5.Razor\Issues.Views.json</Property>
+    <Property Name="sonar.cs.analyzer.projectOutPaths">F:\C#\Website\BackEnd\hocDuAnWEB\eShopSolution\.sonarqube\out\5.Razor</Property>
+  </AnalysisSettings>
+  <Configuration>Debug</Configuration>
+  <Platform>AnyCPU</Platform>
+  <TargetFramework>netcoreapp3.1</TargetFramework>
+</ProjectInfo>

@@ -65,6 +65,7 @@
             <label class="control-label" for="inputPassword1">Password <sup>*</sup></label>
             <div class="controls">
                 <input type="password" asp-for="Password" placeholder="Password">
+                <span asp-validation-for="Password" class="text-error"></span>
             </div>
         </div>
         <div class="control-group">

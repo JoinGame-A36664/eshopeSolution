@@ -18,8 +18,8 @@ namespace eShopeSolution.Utilities.Constants
 
         public class ProductSettings
         {
-            public const int NumberOfFeaturedProducts = 4;
-            public const int NumberOfLatestProducts = 6;
+            public const int NumberOfFeaturedProducts = 10;
+            public const int NumberOfLatestProducts = 10;
         }
 
         public class ProductConstants

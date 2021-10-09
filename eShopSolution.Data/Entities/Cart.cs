@@ -18,8 +18,11 @@ namespace eShopSolution.Data.Entities
         public DateTime DateCreated { get; set; }
 
         public AppUser AppUser { get; set; }// để tham chiếu tới AppUser
-       
 
+
+
+        public float TotalDisCount { get; set; }
+        public int Total { get; set; }
 
     }
 }

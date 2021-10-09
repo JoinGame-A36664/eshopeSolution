@@ -1,0 +1,15 @@
+t
+kF:\C#\Website\BackEnd\hocDuAnWEB\eShopSolution\eShopSolution.BackendApi\Controllers\CategoriesController.csutf-8n
+eF:\C#\Website\BackEnd\hocDuAnWEB\eShopSolution\eShopSolution.BackendApi\Controllers\HomeController.csutf-8r
+iF:\C#\Website\BackEnd\hocDuAnWEB\eShopSolution\eShopSolution.BackendApi\Controllers\LanguageController.csutf-8p
+gF:\C#\Website\BackEnd\hocDuAnWEB\eShopSolution\eShopSolution.BackendApi\Controllers\OrdersController.csutf-8r
+iF:\C#\Website\BackEnd\hocDuAnWEB\eShopSolution\eShopSolution.BackendApi\Controllers\ProductsController.csutf-8o
+fF:\C#\Website\BackEnd\hocDuAnWEB\eShopSolution\eShopSolution.BackendApi\Controllers\RolesController.csutf-8p
+gF:\C#\Website\BackEnd\hocDuAnWEB\eShopSolution\eShopSolution.BackendApi\Controllers\SlidesController.csutf-8o
+fF:\C#\Website\BackEnd\hocDuAnWEB\eShopSolution\eShopSolution.BackendApi\Controllers\UsersController.csutf-8i
+`F:\C#\Website\BackEnd\hocDuAnWEB\eShopSolution\eShopSolution.BackendApi\Models\ErrorViewModel.csutf-8[
+RF:\C#\Website\BackEnd\hocDuAnWEB\eShopSolution\eShopSolution.BackendApi\Program.csutf-8[
+RF:\C#\Website\BackEnd\hocDuAnWEB\eShopSolution\eShopSolution.BackendApi\Startup.csutf-8š
+ŽF:\C#\Website\BackEnd\hocDuAnWEB\eShopSolution\eShopSolution.BackendApi\obj\Debug\netcoreapp3.1\.NETCoreApp,Version=v3.1.AssemblyAttributes.csutf-8”
+ˆF:\C#\Website\BackEnd\hocDuAnWEB\eShopSolution\eShopSolution.BackendApi\obj\Debug\netcoreapp3.1\eShopSolution.BackendApi.AssemblyInfo.csutf-8§
+›F:\C#\Website\BackEnd\hocDuAnWEB\eShopSolution\eShopSolution.BackendApi\obj\Debug\netcoreapp3.1\eShopSolution.BackendApi.MvcApplicationPartsAssemblyInfo.csutf-8

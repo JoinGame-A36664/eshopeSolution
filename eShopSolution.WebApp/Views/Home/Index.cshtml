@@ -7,6 +7,9 @@
 @{
     var culture = CultureInfo.CurrentCulture.Name;
 }
+
+<link href="~/css/site.css" rel="stylesheet" />
+
 @inject Microsoft.Extensions.Configuration.IConfiguration _configuration
 @section slider{
     <div id="carouselBlk">
@@ -67,14 +70,14 @@
                             {
                                 var url = $"/{culture}/{_loc["productUrl"]}/{item.Id}";
                                 <li class="span3">
-                                    <div class="thumbnail">
+                                    <div class="thumbnail" style="min-width:fit-content">
                                         <i class="tag"></i>
                                         <a href="@url">
-                                            <img src="@_configuration["LoadFolderApi"]/../user-content/@item.ThumbnailImage" alt="@item.Name">
+                                            <img class="lt_img" src="@_configuration["LoadFolderApi"]/../user-content/@item.ThumbnailImage" alt="@item.Name">
                                         </a>
                                         <div class="caption">
                                             <h5>@item.Name</h5>
-                                            <h4><a class="btn" href="@url" localize-content>VIEW</a> <span class="pull-right"><localize>$</localize> @item.Price.ToString()</span></h4>
+                                            <h4><a class="btn" href="@url" localize-content>VIEW</a> <span>@item.Price.ToString() <localize>$</localize> </span></h4>
                                         </div>
                                     </div>
                                 </li>
@@ -98,7 +101,7 @@
 
         <li class="span3">
             <div class="thumbnail">
-                <a href="@url"><img src="@_configuration["LoadFolderApi"]/../user-content/@item.ThumbnailImage" alt="@item.Name" /></a>
+                <a href="@url"><img class="lt_img" src="@_configuration["LoadFolderApi"]/../user-content/@item.ThumbnailImage" alt="@item.Name" /></a>
                 <div class="caption">
                     <h5>@item.Name</h5>
                     <p>

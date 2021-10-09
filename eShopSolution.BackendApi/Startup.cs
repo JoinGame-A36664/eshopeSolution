@@ -74,6 +74,26 @@ namespace eShopSolution.BackendApi
 
             // đây là registor theo Di cả đám cảu project luân
             // đăng kí tất cả thằng Validator nào có trong cùng prioject  với LoginRequestValidator ,,   NHƯ KIỂU đăng kí thằng LoginRequest với LoginRequestValidator
+
+            //services.Configure<IdentityOptions>(options =>
+            //{
+            //    // Default Lockout settings.
+            //    options.Password.RequireDigit = false;
+            //    options.SignIn.RequireConfirmedEmail = false;
+            //    options.Password.RequireNonAlphanumeric = false;
+            //    //options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5); // đăng nhập sai thì lokout sau bao lâu mới được mở
+            //    //options.Lockout.MaxFailedAccessAttempts = 5; // max bao nhiêu lần đăng nhập
+            //    //options.Lockout.AllowedForNewUsers = true; // có cho phép User mới không
+            //    //options.SignIn.RequireConfirmedPhoneNumber = false;
+            //    //options.SignIn.RequireConfirmedAccount = false;
+            //    //options.SignIn.RequireConfirmedEmail = false;
+            //    //options.Password.RequiredLength = 8; // độ dài password tối thiểu
+            //    //options.Password.RequireDigit = true;
+            //    options.Password.RequireUppercase = false; // có viết hoa password không
+            //    //options.User.RequireUniqueEmail = true;
+            //});
+
+
             services.AddControllers()
                 .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<LoginRequestValidator>()); // thêm AddFluentValidation để sử dụng Vlidation tải từ nuget FluentValidation.AspNetCore
 
@@ -131,8 +151,10 @@ namespace eShopSolution.BackendApi
             {
                 options.RequireHttpsMetadata = false;
                 options.SaveToken = true;
+                
                 options.TokenValidationParameters = new TokenValidationParameters()
                 {
+                  
                     ValidateIssuer = true,
                     ValidIssuer = issuer,
                     ValidateAudience = true,

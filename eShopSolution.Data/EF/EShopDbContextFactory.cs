@@ -16,7 +16,7 @@ namespace eShopSolution.Data.EF
             // cấu hình đường dẫn tời file json là appsettings để lấy được ConectionString để kết nối với database
             IConfigurationRoot configuration = new ConfigurationBuilder()
                .SetBasePath(Directory.GetCurrentDirectory()) // để có SetBasePath tải thêm Microsoft.Extensions.Configuration.FileExtensions
-               .AddJsonFile("appsettings.json") // để có AddJsonFile tải thêm  Microsoft.Extensions.Configuration.Json
+               .AddJsonFile("appsettings.json") // để có AddJsonFile tải thêm  Mic rosoft.Extensions.Configuration.Json
                .Build();
 
             // cấu hình ở trên giờ lấy ra để sử dụng (lấy chuỗi connectionString ở cấu hình)

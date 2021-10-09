@@ -180,7 +180,7 @@ namespace eShopSolution.Data.Migrations
                         new
                         {
                             Id = new Guid("3792af46-9a8f-4ae6-a1c9-c9c910941e5b"),
-                            ConcurrencyStamp = "86c69cc0-ef2d-474b-8ba9-b18f395344ae",
+                            ConcurrencyStamp = "e2818127-59f6-418a-a847-57a174c44446",
                             Description = "Administrator role",
                             Name = "admin",
                             NormalizedName = "admin"
@@ -257,7 +257,7 @@ namespace eShopSolution.Data.Migrations
                         {
                             Id = new Guid("be525247-1560-4657-8748-3563e08d7ed3"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "f27d6a6a-2fc4-42f0-8125-88fb3695f938",
+                            ConcurrencyStamp = "8cec6845-c985-413c-aca3-f442457cc865",
                             DOB = new DateTime(2001, 6, 16, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "nguyenluc2001@gmail.com",
                             EmailConfirmed = true,
@@ -266,7 +266,7 @@ namespace eShopSolution.Data.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "nguyenluc2001@gmail.com",
                             NormalizedUserName = "admin",
-                            PasswordHash = "AQAAAAEAACcQAAAAEDTSCvQZyC0H6jfPGr6xJ4J1kDJ/Bjtg12g5ISDmy5cLERghzIWfG2yOBpE+l0FlWw==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEDeGKDz2N+6Q8eQgG+NWbd8VkMvtYY4HzWootH8+0Lgz3NrryexlKv3r09z/gOJQ/A==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "",
                             TwoFactorEnabled = false,
@@ -614,7 +614,7 @@ namespace eShopSolution.Data.Migrations
                         new
                         {
                             Id = 1,
-                            DateCreated = new DateTime(2021, 6, 4, 17, 5, 6, 779, DateTimeKind.Local).AddTicks(4099),
+                            DateCreated = new DateTime(2021, 6, 27, 9, 56, 22, 295, DateTimeKind.Local).AddTicks(710),
                             IsFeatured = true,
                             OriginalPrice = 1000000m,
                             Price = 2000000m,
@@ -624,7 +624,7 @@ namespace eShopSolution.Data.Migrations
                         new
                         {
                             Id = 2,
-                            DateCreated = new DateTime(2021, 6, 4, 17, 5, 6, 780, DateTimeKind.Local).AddTicks(5652),
+                            DateCreated = new DateTime(2021, 6, 27, 9, 56, 22, 296, DateTimeKind.Local).AddTicks(2010),
                             IsFeatured = true,
                             OriginalPrice = 1000000m,
                             Price = 2000000m,
@@ -634,7 +634,7 @@ namespace eShopSolution.Data.Migrations
                         new
                         {
                             Id = 3,
-                            DateCreated = new DateTime(2021, 6, 4, 17, 5, 6, 780, DateTimeKind.Local).AddTicks(5800),
+                            DateCreated = new DateTime(2021, 6, 27, 9, 56, 22, 296, DateTimeKind.Local).AddTicks(2074),
                             IsFeatured = true,
                             OriginalPrice = 1000000m,
                             Price = 2500000m,
@@ -644,7 +644,7 @@ namespace eShopSolution.Data.Migrations
                         new
                         {
                             Id = 4,
-                            DateCreated = new DateTime(2021, 6, 4, 17, 5, 6, 780, DateTimeKind.Local).AddTicks(5803),
+                            DateCreated = new DateTime(2021, 6, 27, 9, 56, 22, 296, DateTimeKind.Local).AddTicks(2077),
                             IsFeatured = true,
                             OriginalPrice = 1000000m,
                             Price = 3000000m,
@@ -654,7 +654,7 @@ namespace eShopSolution.Data.Migrations
                         new
                         {
                             Id = 5,
-                            DateCreated = new DateTime(2021, 6, 4, 17, 5, 6, 780, DateTimeKind.Local).AddTicks(5805),
+                            DateCreated = new DateTime(2021, 6, 27, 9, 56, 22, 296, DateTimeKind.Local).AddTicks(2079),
                             IsFeatured = true,
                             OriginalPrice = 1000000m,
                             Price = 1200000m,
@@ -664,7 +664,7 @@ namespace eShopSolution.Data.Migrations
                         new
                         {
                             Id = 6,
-                            DateCreated = new DateTime(2021, 6, 4, 17, 5, 6, 780, DateTimeKind.Local).AddTicks(5807),
+                            DateCreated = new DateTime(2021, 6, 27, 9, 56, 22, 296, DateTimeKind.Local).AddTicks(2081),
                             IsFeatured = true,
                             OriginalPrice = 1000000m,
                             Price = 45000000m,
@@ -717,7 +717,7 @@ namespace eShopSolution.Data.Migrations
                         {
                             Id = 1,
                             Caption = "",
-                            DateCreated = new DateTime(2021, 6, 4, 17, 5, 6, 781, DateTimeKind.Local).AddTicks(1879),
+                            DateCreated = new DateTime(2021, 6, 27, 9, 56, 22, 296, DateTimeKind.Local).AddTicks(5808),
                             FileSize = 100L,
                             ImagePath = "0f75e9c5-b794-4f2d-a328-7de10107b36c.jpg",
                             Isdefault = true,
@@ -728,7 +728,7 @@ namespace eShopSolution.Data.Migrations
                         {
                             Id = 2,
                             Caption = "",
-                            DateCreated = new DateTime(2021, 6, 4, 17, 5, 6, 781, DateTimeKind.Local).AddTicks(4363),
+                            DateCreated = new DateTime(2021, 6, 27, 9, 56, 22, 296, DateTimeKind.Local).AddTicks(7153),
                             FileSize = 100L,
                             ImagePath = "4b3f6988-c6ab-4f18-bf60-e5adf20c6ad3.jpeg",
                             Isdefault = true,
@@ -739,7 +739,7 @@ namespace eShopSolution.Data.Migrations
                         {
                             Id = 3,
                             Caption = "",
-                            DateCreated = new DateTime(2021, 6, 4, 17, 5, 6, 781, DateTimeKind.Local).AddTicks(4407),
+                            DateCreated = new DateTime(2021, 6, 27, 9, 56, 22, 296, DateTimeKind.Local).AddTicks(7203),
                             FileSize = 100L,
                             ImagePath = "5b6cd57e-0dab-4a51-9150-36db8773aac8.jpeg",
                             Isdefault = true,
@@ -750,7 +750,7 @@ namespace eShopSolution.Data.Migrations
                         {
                             Id = 4,
                             Caption = "",
-                            DateCreated = new DateTime(2021, 6, 4, 17, 5, 6, 781, DateTimeKind.Local).AddTicks(4409),
+                            DateCreated = new DateTime(2021, 6, 27, 9, 56, 22, 296, DateTimeKind.Local).AddTicks(7206),
                             FileSize = 100L,
                             ImagePath = "804e1e0c-ec76-4fd9-a91f-d400e99ff414.jpeg",
                             Isdefault = true,
@@ -761,7 +761,7 @@ namespace eShopSolution.Data.Migrations
                         {
                             Id = 5,
                             Caption = "",
-                            DateCreated = new DateTime(2021, 6, 4, 17, 5, 6, 781, DateTimeKind.Local).AddTicks(4411),
+                            DateCreated = new DateTime(2021, 6, 27, 9, 56, 22, 296, DateTimeKind.Local).AddTicks(7208),
                             FileSize = 100L,
                             ImagePath = "bd360e3b-e1f1-4ec6-b33b-a6c7a69e665c.jpg",
                             Isdefault = true,
@@ -772,7 +772,7 @@ namespace eShopSolution.Data.Migrations
                         {
                             Id = 6,
                             Caption = "",
-                            DateCreated = new DateTime(2021, 6, 4, 17, 5, 6, 781, DateTimeKind.Local).AddTicks(4413),
+                            DateCreated = new DateTime(2021, 6, 27, 9, 56, 22, 296, DateTimeKind.Local).AddTicks(7209),
                             FileSize = 100L,
                             ImagePath = "e0254137-2422-40d4-ba03-a3cf6559bf17.jpg",
                             Isdefault = true,
