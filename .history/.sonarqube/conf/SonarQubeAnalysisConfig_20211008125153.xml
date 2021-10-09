@@ -5,7 +5,7 @@
   <SonarBinDir>F:\C#\Website\BackEnd\hocDuAnWEB\eShopSolution\.sonarqube\bin</SonarBinDir>
   <SonarScannerWorkingDirectory>F:\C#\Website\BackEnd\hocDuAnWEB\eShopSolution</SonarScannerWorkingDirectory>
   <HasBeginStepCommandLineCredentials>true</HasBeginStepCommandLineCredentials>
-  <SonarQubeHostUrl>http://da53-14-228-169-250.ngrok.io </SonarQubeHostUrl>
+  <SonarQubeHostUrl>http://localhost:9000</SonarQubeHostUrl>
   <SonarQubeVersion>9.1.0.47736</SonarQubeVersion>
   <SonarProjectKey>testSonarqube</SonarProjectKey>
   <AdditionalConfig>
@@ -104,7 +104,7 @@
     <Property Name="sonar.core.id">BF41A1F2-AXxebBzrbUcEFJJCebIc</Property>
   </ServerSettings>
   <LocalSettings>
-    <Property Name="sonar.host.url">http://da53-14-228-169-250.ngrok.io </Property>
+    <Property Name="sonar.host.url">http://localhost:9000</Property>
   </LocalSettings>
   <AnalyzersSettings>
     <AnalyzerSettings>

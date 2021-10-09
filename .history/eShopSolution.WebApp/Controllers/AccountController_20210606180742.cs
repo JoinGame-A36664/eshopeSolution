@@ -75,7 +75,7 @@ namespace eShopSolution.WebApp.Controllers
         [HttpGet]
         public async Task<IActionResult> Register()
         {
-            return await Task.Run(View());
+            return View();
         }
 
         [HttpPost]
